@@ -1,0 +1,14 @@
+color scheme 1
+    #ef680f
+    #fe8e1e
+    #e8e5dd
+    #8d9e9b
+    #476b69
+
+color scheme 2
+    #B30634
+    #4a2e6e
+    #6e4a94
+    #F17F1F
+    #F8E3D0
+    #0A0F23
