@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<link rel="stylesheet" href="css/styles.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">   
     <!-- Urbanist -->
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <!-- Montserrat -->
@@ -15,108 +15,81 @@
 </head>
 <!--the "hz" class will be the default style prefix-->
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg hz-bg-dark-default">
-            <div class="container-lg">
+    <header class="hz-header sticky-top z-3">
+        <nav class="navbar navbar-expand-md hz-bg-dark-default">
+            <div class="container-lg border-secondary">
                 <h1>
                     <a class="navbar-brand" href="#">
                         <img src="images/icons/logoa.png" alt="Horizon logo" class="hz-icon-main">
                     </a>
                 </h1>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown link
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                <div class="collapse navbar-collapse small" id="navbarSupportedContent">
+                    <div class="flex-grow-1 max-w-md d-none d-md-block hz-search-bar">
+                            <input class="form-control me-2 position-relative" type="search" placeholder="Search" aria-label="Search"/>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 gap-md-3">
+                        <button class="p-2">Flex item 1</button>
+                        <button class="p-2">Flex item 2</button>
+                        <button class="p-2">Flex item 3</button>
+                    </div>
                 </div>
             </div>
         </nav>
-        <div class="strap mb-0 hz-bg-fifth">
-            
-        </div>
     </header>
     <main class="hz-bg-main">
-        <section class="container-lg pt-2 pb-4">
-            <div class="card mt-2 container-fluid hz-carrousel overflow-hidden ratio ratio-21x9">
-                <div id="carousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="images/dump-files/images.jfif" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h2>Carousel Item 1</h2>
-                                <p>Description for Carousel Item 1</p>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="images/dump-files/images.png" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h2>Carousel Item 2</h2>
-                                <p>Description for Carousel Item 2</p>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="images/dump-files/images (1).jfif" class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block hz-caption">
-                                <h2>Carousel Item 3</h2>
-                                <p>Description for Carousel Item 3</p>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+        <div class="container-lg pt-2 pb-4">
+            <section class="card rounded-4 p-4 p-md-5 position-relative overflow-hidden hz-carrousel">
+                <img src="..." class="card-img" alt="...">
+                <div class="card-img-overlay">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small>Last updated 3 mins ago</small></p>
                 </div>
-            </div>
+            </section>
             <section class="row mt-4 m-1">
                 <div class="col-md-9">
-                    <article class="card hz-card">
-                        <div class="card-body">
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                    <div class="row">
+                        <div class="col-6">
+                                <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
                         </div>
-                    </article>
-                    <article class="card hz-card">
-                        <div class="card-body">
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                        <div class="col-6">
+                                <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
                         </div>
-                    </article>
-                    <article class="card hz-card">
-                        <div class="card-body">
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                        </div>
-                    </article>
+                    </div>
                 </div>
                 <!-- Sidebar -->
-                <aside class="col-md-3 hz-sidebar">
+                <aside class="col-md-3 sticky-top">
                     <div class="card hz-card p-4 hz-card-border">
                         <div class="card mb-2">
                             <img src="..." class="card-img-top" alt="...">
@@ -136,9 +109,6 @@
                     </div>
                 </aside>
             </section>
-        </section>        
-        <div class="strap mb-0 hz-bg-third">
-            
         </div>
     </main>
     <footer class="hz-bg-footer p-4">

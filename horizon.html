@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HORIZON - Wireframe Plataforma de Eventos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f1115;
+            color: #d1d5db;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Technical Blueprint Wireframe Aesthetics */
+        .wf-border {
+            border: 1px dashed #374151;
+        }
+
+        .wf-border-solid {
+            border: 1px solid #374151;
+        }
+
+        .wf-bg {
+            background-color: #161a22;
+        }
+
+        .wf-bg-card {
+            background-color: #1c212c;
+        }
+
+        /* Custom Scrollbar for wireframe feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+
+        /* Interactive Map SVG Hover Styles */
+        .zone-path {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .zone-path:hover {
+            fill-opacity: 0.85;
+            stroke-width: 3;
+        }
+        .zone-path.selected {
+            stroke: #ffffff !important;
+            stroke-width: 3 !important;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gray-700 selection:text-white">
+
+    <!-- TOPBAR HEADER -->
+    <header class="wf-bg border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('explore')">
+                <div class="w-9 h-9 bg-gray-100 text-black font-black flex items-center justify-center rounded font-mono tracking-tighter text-xl">
+                    HZ
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-widest text-white font-mono block leading-none">HORIZON</span>
+                    <span class="text-[10px] font-mono text-gray-500 tracking-wider">TICKETING // PLATFORM</span>
+                </div>
+            </div>
+
+            <!-- Global Search -->
+            <div class="flex-1 max-w-md hidden md:block">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Buscar artistas, eventos, ciudades..." class="w-full wf-bg-card wf-border-solid text-sm rounded-lg pl-9 pr-4 py-2 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-gray-400 font-mono transition">
+                </div>
+            </div>
+
+            <!-- Location Selector & Quick Actions -->
+            <div class="flex items-center gap-3 text-sm font-mono">
+                <!-- Location Dropdown -->
+                <div class="relative flex items-center bg-gray-900 wf-border-solid rounded px-2 py-1.5 text-xs text-gray-300">
+                    <i class="fa-solid fa-location-dot text-gray-400 mr-2"></i>
+                    <select id="cityFilterTop" onchange="syncAndFilterCity(this.value)" class="bg-transparent focus:outline-none text-gray-200 cursor-pointer pr-1">
+                        <option value="ALL" class="bg-gray-900 text-white">Perú (Todas)</option>
+                        <option value="Lima" class="bg-gray-900 text-white">Lima</option>
+                        <option value="Arequipa" class="bg-gray-900 text-white">Arequipa</option>
+                        <option value="Cusco" class="bg-gray-900 text-white">Cusco</option>
+                        <option value="Trujillo" class="bg-gray-900 text-white">Trujillo</option>
+                    </select>
+                </div>
+
+                <!-- Create Event CTA -->
+                <button onclick="showModal('modalB2B')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded text-xs wf-border-solid hover:bg-gray-800 text-gray-300 transition">
+                    <i class="fa-solid fa-plus text-gray-400"></i>
+                    <span>Crear Evento</span>
+                </button>
+
+                <!-- My Cart Button / Badge -->
+                <button onclick="switchView('checkout')" class="relative flex items-center gap-2 bg-gray-100 text-black px-3 py-1.5 rounded text-xs font-semibold hover:bg-white transition">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span class="hidden sm:inline">Mis Tickets</span>
+                    <span id="cartBadgeCount" class="bg-black text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-mono ml-0.5">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+        <!-- VIEW 1: EXPLORE EVENTS -->
+        <div id="viewExplore" class="space-y-8">
+            
+            <!-- SECTION 1: TOP FEATURED CAROUSEL / HERO (FULL WIDTH TOP) -->
+            <section class="wf-border-solid wf-bg-card rounded-xl p-4 sm:p-6 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                        <h2 class="text-xs font-mono uppercase tracking-widest text-gray-400">Destacados // En Vivo Countdown</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="prevCarousel()" class="w-8 h-8 rounded wf-border-solid flex items-center justify-center hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <button onclick="nextCarousel()" class="w-8 h-8 rounded wf-border-solid flex items-center justify-center hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="carouselContainer" class="relative min-h-[220px] sm:min-h-[260px] flex flex-col justify-between">
+                    <!-- Dynamic Slide Content -->
+                </div>
+            </section>
+
+            <!-- SECTION 2: MAIN BODY - LEFT CONTENT (72%) & RIGHT SIDEBAR (28%) -->
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+                
+                <!-- MAIN LEFT COLUMN (~72%): CATEGORIES & EVENT GRID -->
+                <div class="w-full lg:w-[72%] space-y-6">
+                    
+                    <!-- Category Chips -->
+                    <div class="flex items-center justify-between gap-2 border-b border-gray-800 pb-4 overflow-x-auto">
+                        <div class="flex items-center gap-2" id="categoryChipList">
+                            <!-- Category chips rendered via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Events Header Controls -->
+                    <div class="flex items-center justify-between font-mono text-xs text-gray-400">
+                        <div>
+                            <span>Mostrando <strong id="eventCountDisplay" class="text-white">0</strong> eventos</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label for="sortBy">Ordenar por:</label>
+                            <select id="sortBy" onchange="applyFilters()" class="bg-gray-900 border border-gray-800 text-gray-300 rounded px-2 py-1 focus:outline-none">
+                                <option value="date">Fecha más cercana</option>
+                                <option value="price-asc">Precio: Menor a Mayor</option>
+                                <option value="price-desc">Precio: Mayor a Menor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Event Grid -->
+                    <div id="eventsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Event Cards injected via JS -->
+                    </div>
+
+                    <!-- Empty State Placeholder -->
+                    <div id="emptyState" class="hidden wf-border rounded-xl p-12 text-center text-gray-500 font-mono space-y-3">
+                        <i class="fa-solid fa-filter-circle-xmark text-4xl mb-2 text-gray-600"></i>
+                        <p class="text-base text-gray-300">No se encontraron eventos con los filtros seleccionados.</p>
+                        <button onclick="resetFilters()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs transition">Limpiar Filtros</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR COLUMN (~28%): FILTERS, TOP RANKING, B2B, CART SUMMARY -->
+                <aside class="w-full lg:w-[28%] space-y-6 sticky top-20">
+                    
+                    <!-- Quick Filters Panel -->
+                    <div class="wf-bg-card wf-border-solid rounded-xl p-5 space-y-5">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                            <h3 class="font-mono text-xs uppercase tracking-wider text-white font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-gray-400"></i> Filtros Rápidos
+                            </h3>
+                            <button onclick="resetFilters()" class="text-[11px] font-mono text-gray-500 hover:text-white underline">Restablecer</button>
+                        </div>
+
+                        <!-- Filter City -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-mono text-gray-400 block">Ciudad</label>
+                            <select id="sidebarCityFilter" onchange="syncAndFilterCity(this.value)" class="w-full bg-gray-900 border border-gray-800 text-gray-200 text-xs rounded p-2 focus:outline-none">
+                                <option value="ALL">Todas las ciudades</option>
+                                <option value="Lima">Lima</option>
+                                <option value="Arequipa">Arequipa</option>
+                                <option value="Cusco">Cusco</option>
+                                <option value="Trujillo">Trujillo</option>
+                            </select>
+                        </div>
+
+                        <!-- Price Range Slider -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs font-mono">
+                                <span class="text-gray-400">Precio Máximo:</span>
+                                <span id="priceLabel" class="text-white font-bold">S/ 500</span>
+                            </div>
+                            <input type="range" id="priceRange" min="50" max="500" step="10" value="500" oninput="applyFilters()" class="w-full accent-gray-200 bg-gray-800 rounded h-1.5 cursor-pointer">
+                            <div class="flex justify-between text-[10px] font-mono text-gray-500">
+                                <span>S/ 50</span>
+                                <span>S/ 500+</span>
+                            </div>
+                        </div>
+
+                        <!-- Date Quick Preset -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-mono text-gray-400 block">Fecha</label>
+                            <div class="grid grid-cols-3 gap-1 text-[11px] font-mono">
+                                <button onclick="setFilterDate('all')" id="btnDateAll" class="date-btn active border border-gray-700 bg-gray-800 text-white rounded py-1 text-center">Todos</button>
+                                <button onclick="setFilterDate('weekend')" id="btnDateWeekend" class="date-btn border border-gray-800 bg-transparent text-gray-400 rounded py-1 text-center hover:border-gray-600">Este Finde</button>
+                                <button onclick="setFilterDate('month')" id="btnDateMonth" class="date-btn border border-gray-800 bg-transparent text-gray-400 rounded py-1 text-center hover:border-gray-600">Este Mes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Cart / Quick Summary -->
+                    <div class="wf-bg-card wf-border-solid rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                            <h4 class="font-mono text-xs text-gray-300 font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping text-gray-400"></i> Mi Carrito
+                            </h4>
+                            <span id="miniCartCount" class="text-[10px] font-mono bg-gray-800 px-2 py-0.5 rounded text-gray-300">0 ítems</span>
+                        </div>
+                        <div id="miniCartContent" class="text-xs text-gray-500 font-mono py-2">
+                            No tienes entradas seleccionadas.
+                        </div>
+                        <button onclick="switchView('checkout')" id="btnMiniCartCheckout" disabled class="w-full bg-gray-800 text-gray-500 text-xs py-2 rounded font-mono font-bold transition">
+                            Ir a Pagar
+                        </button>
+                    </div>
+
+                    <!-- Top Events Ranking Section -->
+                    <div class="wf-bg-card wf-border-solid rounded-xl p-5 space-y-4">
+                        <h3 class="font-mono text-xs uppercase tracking-wider text-white font-bold flex items-center gap-2 border-b border-gray-800 pb-3">
+                            <i class="fa-solid fa-fire text-orange-500"></i> Top Tendencias
+                        </h3>
+                        <div class="space-y-3" id="topRankingList">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- B2B Section for Event Organizers -->
+                    <div class="wf-border rounded-xl p-5 bg-gradient-to-b from-gray-900 to-gray-950 space-y-3">
+                        <div class="w-8 h-8 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-white text-sm">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-white">¿Organizas un evento?</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Publica tu concierto o festival en HORIZON. Control de aforo en tiempo real y comisiones transparentes.
+                        </p>
+                        <button onclick="showModal('modalB2B')" class="w-full py-2 bg-gray-100 hover:bg-white text-black text-xs font-mono font-bold rounded transition">
+                            Publicar Evento
+                        </button>
+                    </div>
+
+                </aside>
+            </div>
+        </div>
+
+        <!-- VIEW 2: EVENT DETAIL & INTERACTIVE VENUE MAP SELECTION -->
+        <div id="viewDetail" class="hidden space-y-6">
+            <!-- Back Navigation -->
+            <button onclick="switchView('explore')" class="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition">
+                <i class="fa-solid fa-arrow-left"></i> Volver a Explorar Eventos
+            </button>
+
+            <!-- Event Header Info Banner -->
+            <div id="detailHeaderBanner" class="wf-bg-card wf-border-solid rounded-xl p-6 flex flex-col md:flex-row gap-6 justify-between items-start">
+                <!-- Dynamically Populated -->
+            </div>
+
+            <!-- Interactive Seating / Map & Ticket Selector Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- SVG Interactive Map (2 Columns) -->
+                <div class="lg:col-span-2 wf-bg-card wf-border-solid rounded-xl p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                        <h3 class="font-mono text-xs uppercase tracking-wider text-white font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-gray-400"></i> Mapa Interactivo del Recinto
+                        </h3>
+                        <span class="text-[11px] font-mono text-gray-400">Haz clic en una zona para seleccionarla</span>
+                    </div>
+
+                    <!-- SVG Venue Stadium Map Wireframe -->
+                    <div class="relative bg-gray-950 rounded-lg p-4 wf-border-solid overflow-hidden flex flex-col items-center">
+                        <svg viewBox="0 0 600 380" class="w-full max-w-lg h-auto select-none">
+                            <!-- Stage -->
+                            <rect x="180" y="20" width="240" height="40" rx="4" fill="#1f2937" stroke="#4b5563" stroke-width="2" />
+                            <text x="300" y="45" fill="#e5e7eb" font-family="JetBrains Mono" font-size="12" font-weight="bold" text-anchor="middle">escenario / STAGE</text>
+                            
+                            <!-- Sound Booth -->
+                            <rect x="250" y="210" width="100" height="25" rx="2" fill="#111827" stroke="#374151" />
+                            <text x="300" y="226" fill="#6b7280" font-family="JetBrains Mono" font-size="9" text-anchor="middle">CONTROL DE AUDIO</text>
+
+                            <!-- Platinum Zone (Front Stage) -->
+                            <path d="M 120 75 L 480 75 L 450 140 L 150 140 Z" class="zone-path" id="zone-platinum" fill="#312e81" fill-opacity="0.6" stroke="#6366f1" stroke-width="2" onclick="selectZone('platinum')" />
+                            <text x="300" y="112" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA PLATINUM</text>
+
+                            <!-- VIP Zone (Mid Arena) -->
+                            <path d="M 140 150 L 460 150 L 430 230 L 170 230 Z" class="zone-path" id="zone-vip" fill="#065f46" fill-opacity="0.6" stroke="#10b981" stroke-width="2" onclick="selectZone('vip')" />
+                            <text x="300" y="185" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA VIP</text>
+
+                            <!-- General Zone (Back Arena) -->
+                            <path d="M 110 245 L 490 245 L 530 350 L 70 350 Z" class="zone-path" id="zone-general" fill="#1e293b" fill-opacity="0.8" stroke="#64748b" stroke-width="2" onclick="selectZone('general')" />
+                            <text x="300" y="300" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA GENERAL</text>
+                        </svg>
+
+                        <!-- Legend -->
+                        <div class="flex flex-wrap justify-center gap-4 mt-4 pt-3 border-t border-gray-900 w-full text-xs font-mono">
+                            <div class="flex items-center gap-1.5 cursor-pointer" onclick="selectZone('platinum')">
+                                <span class="w-3 h-3 rounded bg-indigo-900 border border-indigo-500"></span> Platinum
+                            </div>
+                            <div class="flex items-center gap-1.5 cursor-pointer" onclick="selectZone('vip')">
+                                <span class="w-3 h-3 rounded bg-emerald-900 border border-emerald-500"></span> VIP
+                            </div>
+                            <div class="flex items-center gap-1.5 cursor-pointer" onclick="selectZone('general')">
+                                <span class="w-3 h-3 rounded bg-slate-800 border border-slate-500"></span> General
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Customizer & Pricing Sidebar -->
+                <div class="wf-bg-card wf-border-solid rounded-xl p-6 space-y-6">
+                    <h3 class="font-mono text-xs uppercase tracking-wider text-white font-bold border-b border-gray-800 pb-3">
+                        Selección de Entradas
+                    </h3>
+
+                    <!-- Dynamic Zone Ticket Selector -->
+                    <div id="ticketSelectors" class="space-y-4">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                    <!-- Breakdown & Fee Summary -->
+                    <div class="wf-bg rounded-lg p-4 wf-border-solid space-y-2 font-mono text-xs">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Subtotal Tickets:</span>
+                            <span id="detailSubtotal" class="text-gray-200">S/ 0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-400">
+                            <span>Comisión Servicio (10%):</span>
+                            <span id="detailFee" class="text-gray-200">S/ 0.00</span>
+                        </div>
+                        <div class="border-t border-gray-800 pt-2 flex justify-between text-sm font-bold text-white">
+                            <span>Total Est.:</span>
+                            <span id="detailTotal" class="text-green-400">S/ 0.00</span>
+                        </div>
+                    </div>
+
+                    <button onclick="addSelectedTicketsToCart()" id="addToCartBtn" disabled class="w-full py-3 bg-gray-100 hover:bg-white text-black font-mono font-bold text-xs rounded transition uppercase tracking-wider">
+                        Añadir al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: CART & CHECKOUT INTERACTIVE -->
+        <div id="viewCheckout" class="hidden space-y-6">
+            <button onclick="switchView('explore')" class="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition">
+                <i class="fa-solid fa-arrow-left"></i> Seguir Comprando
+            </button>
+
+            <h2 class="text-xl font-bold font-mono text-white border-b border-gray-800 pb-3">
+                Resumen de Compra & Checkout
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items List -->
+                <div class="lg:col-span-2 space-y-4" id="checkoutItemsList">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Payment Form Wireframe -->
+                <div class="wf-bg-card wf-border-solid rounded-xl p-6 space-y-5">
+                    <h3 class="font-mono text-xs uppercase tracking-wider text-white font-bold border-b border-gray-800 pb-3">
+                        Detalles de Pago
+                    </h3>
+
+                    <form onsubmit="handlePayment(event)" class="space-y-4 text-xs font-mono">
+                        <div>
+                            <label class="block text-gray-400 mb-1">Nombre Completo</label>
+                            <input type="text" required placeholder="Juan Pérez" class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white focus:outline-none focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Correo Electrónico (para e-Tickets)</label>
+                            <input type="email" required placeholder="usuario@correo.com" class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white focus:outline-none focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1">Método de Pago</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="border border-gray-800 bg-gray-900 rounded p-2 flex items-center gap-2 cursor-pointer hover:border-gray-600">
+                                    <input type="radio" name="payment" value="card" checked class="accent-gray-400"> Tarjeta Cr/Déb
+                                </label>
+                                <label class="border border-gray-800 bg-gray-900 rounded p-2 flex items-center gap-2 cursor-pointer hover:border-gray-600">
+                                    <input type="radio" name="payment" value="yape" class="accent-gray-400"> Yape / Plin
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Final Order Totals -->
+                        <div class="wf-bg rounded p-3 space-y-1 text-gray-300 pt-3">
+                            <div class="flex justify-between">
+                                <span>Monto Entradas:</span>
+                                <span id="cartSubtotal">S/ 0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Cargo Servicio:</span>
+                                <span id="cartFee">S/ 0.00</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-white text-sm border-t border-gray-800 pt-2 mt-2">
+                                <span>Total a Pagar:</span>
+                                <span id="cartTotal" class="text-green-400">S/ 0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnPayNow" class="w-full py-3 bg-green-500 hover:bg-green-400 text-black font-bold font-mono text-xs rounded transition uppercase tracking-wider">
+                            Confirmar y Procesar Compra
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL B2B ORGANIZADORES -->
+    <div id="modalB2B" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="wf-bg-card wf-border-solid max-w-md w-full rounded-xl p-6 space-y-4 font-mono relative">
+            <button onclick="closeModal('modalB2B')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-base font-bold text-white border-b border-gray-800 pb-2">Publica tu Evento en HORIZON</h3>
+            <p class="text-xs text-gray-400">Ingresa la información básica de tu propuesta y un asesor B2B se contactará en breve.</p>
+            
+            <form onsubmit="submitB2BForm(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-400 mb-1">Nombre de la Productora / Organizador</label>
+                    <input type="text" required class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Nombre del Evento</label>
+                    <input type="text" required class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">Aforo Estimado</label>
+                    <select class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white">
+                        <option>500 - 1,000 personas</option>
+                        <option>1,000 - 5,000 personas</option>
+                        <option>Más de 5,000 personas</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-2 bg-gray-100 text-black font-bold rounded hover:bg-white transition mt-2">
+                    Enviar Solicitud
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden wf-bg-card border border-green-500 text-white px-4 py-3 rounded-lg shadow-2xl font-mono text-xs flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-green-400 text-base"></i>
+        <span id="toastMessage">Operación realizada con éxito</span>
+    </div>
+
+    <!-- FOOTER WIREFRAME -->
+    <footer class="wf-bg border-t border-gray-800 py-6 mt-12 text-center text-xs font-mono text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-gray-300">HORIZON</span> - Prototipo Wireframe Digital &copy; 2026
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-gray-300">Términos</a>
+                <a href="#" class="hover:text-gray-300">Privacidad</a>
+                <a href="#" class="hover:text-gray-300">Soporte B2B</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // MOCK DATA: EVENT DATABASE
+        const EVENTS_DATA = [
+            {
+                id: 'evt-1',
+                title: 'NEON WAVE FESTIVAL 2026',
+                category: 'Festivales',
+                city: 'Lima',
+                venue: 'Jardines del Parque de la Exposición',
+                date: '2026-11-15',
+                displayDate: '15 NOV 2026 - 18:00 HRS',
+                minPrice: 180,
+                featured: true,
+                badge: 'SOLDOUT NEAR',
+                imageText: 'NEON WAVE FESTIVAL',
+                zones: {
+                    platinum: { name: 'Platinum Stage', price: 350, stock: 15 },
+                    vip: { name: 'VIP Dancefloor', price: 240, stock: 40 },
+                    general: { name: 'General', price: 180, stock: 120 }
+                }
+            },
+            {
+                id: 'evt-2',
+                title: 'SYNTHESIS ELECTRONIC NIGHT',
+                category: 'Electrónica',
+                city: 'Lima',
+                venue: 'Costa Verde Hall',
+                date: '2026-10-28',
+                displayDate: '28 OCT 2026 - 22:00 HRS',
+                minPrice: 120,
+                featured: true,
+                badge: 'POPULAR',
+                imageText: 'SYNTHESIS NIGHT',
+                zones: {
+                    platinum: { name: 'Platinum DJ Booth', price: 280, stock: 8 },
+                    vip: { name: 'VIP Terrace', price: 190, stock: 25 },
+                    general: { name: 'General Field', price: 120, stock: 80 }
+                }
+            },
+            {
+                id: 'evt-3',
+                title: 'AREQUIPA ROCK SYMPHONY',
+                category: 'Conciertos',
+                city: 'Arequipa',
+                venue: 'Jardín de la Cerveza',
+                date: '2026-12-05',
+                displayDate: '05 DIC 2026 - 20:00 HRS',
+                minPrice: 90,
+                featured: false,
+                badge: 'NUEVO',
+                imageText: 'ROCK SYMPHONY',
+                zones: {
+                    platinum: { name: 'Platinum Front', price: 210, stock: 30 },
+                    vip: { name: 'VIP Preferencial', price: 140, stock: 60 },
+                    general: { name: 'General APAL', price: 90, stock: 200 }
+                }
+            },
+            {
+                id: 'evt-4',
+                title: 'CUSCO INDIE INDEPENDIENTE',
+                category: 'Fiestas',
+                city: 'Cusco',
+                venue: 'Teatro Municipal del Cusco',
+                date: '2026-11-20',
+                displayDate: '20 NOV 2026 - 19:30 HRS',
+                minPrice: 75,
+                featured: false,
+                badge: 'INTIMO',
+                imageText: 'CUSCO INDIE',
+                zones: {
+                    platinum: { name: 'Platinum Central', price: 160, stock: 12 },
+                    vip: { name: 'VIP Platea', price: 110, stock: 30 },
+                    general: { name: 'General Galería', price: 75, stock: 50 }
+                }
+            },
+            {
+                id: 'evt-5',
+                title: 'TRUJILLO URBAN BEATS',
+                category: 'Conciertos',
+                city: 'Trujillo',
+                venue: 'Mall Plaza Explanada',
+                date: '2026-11-02',
+                displayDate: '02 NOV 2026 - 21:00 HRS',
+                minPrice: 110,
+                featured: false,
+                badge: 'ESTRENO',
+                imageText: 'URBAN BEATS',
+                zones: {
+                    platinum: { name: 'Platinum Box', price: 260, stock: 20 },
+                    vip: { name: 'VIP Zone', price: 170, stock: 45 },
+                    general: { name: 'General Zone', price: 110, stock: 150 }
+                }
+            },
+            {
+                id: 'evt-6',
+                title: 'TEATRO NOCTURNO: MISTERIOS',
+                category: 'Teatro',
+                city: 'Lima',
+                venue: 'Teatro Peruano Japonés',
+                date: '2026-10-31',
+                displayDate: '31 OCT 2026 - 20:30 HRS',
+                minPrice: 60,
+                featured: false,
+                badge: 'EDICIÓN ESPECIAL',
+                imageText: 'TEATRO MISTERIOS',
+                zones: {
+                    platinum: { name: 'Platinum Filas 1-5', price: 150, stock: 10 },
+                    vip: { name: 'VIP Filas 6-15', price: 100, stock: 25 },
+                    general: { name: 'General Mezzanine', price: 60, stock: 60 }
+                }
+            }
+        ];
+
+        // CATEGORIES LIST
+        const CATEGORIES = ['Todos', 'Conciertos', 'Festivales', 'Fiestas', 'Electrónica', 'Teatro'];
+
+        // STATE MANAGEMENT
+        let currentFilterCategory = 'Todos';
+        let currentFilterCity = 'ALL';
+        let currentFilterMaxPrice = 500;
+        let currentFilterDatePreset = 'all';
+        let carouselIndex = 0;
+        let selectedEventForDetail = null;
+        let selectedTicketQuantities = { platinum: 0, vip: 0, general: 0 };
+        let cart = [];
+
+        window.onload = function() {
+            renderCategories();
+            renderCarousel();
+            renderTopRanking();
+            applyFilters();
+            startCountdownTimer();
+        };
+
+        // NAVIGATION VIEW SWITCHER
+        function switchView(viewName) {
+            document.getElementById('viewExplore').classList.add('hidden');
+            document.getElementById('viewDetail').classList.add('hidden');
+            document.getElementById('viewCheckout').classList.add('hidden');
+
+            if (viewName === 'explore') {
+                document.getElementById('viewExplore').classList.remove('hidden');
+            } else if (viewName === 'detail') {
+                document.getElementById('viewDetail').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (viewName === 'checkout') {
+                document.getElementById('viewCheckout').classList.remove('hidden');
+                renderCheckoutView();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // RENDER CATEGORY CHIPS
+        function renderCategories() {
+            const container = document.getElementById('categoryChipList');
+            container.innerHTML = CATEGORIES.map(cat => {
+                const isActive = cat === currentFilterCategory;
+                return `
+                    <button onclick="selectCategory('${cat}')" 
+                        class="px-3.5 py-1.5 rounded-full text-xs font-mono transition whitespace-nowrap ${
+                            isActive 
+                            ? 'bg-white text-black font-bold shadow-sm' 
+                            : 'wf-bg-card wf-border-solid text-gray-400 hover:text-white hover:border-gray-600'
+                        }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            currentFilterCategory = cat;
+            renderCategories();
+            applyFilters();
+        }
+
+        // SYNC CITY FILTERS (TOPBAR & SIDEBAR)
+        function syncAndFilterCity(city) {
+            currentFilterCity = city;
+            document.getElementById('cityFilterTop').value = city;
+            document.getElementById('sidebarCityFilter').value = city;
+            applyFilters();
+        }
+
+        // DATE PRESETS FILTER
+        function setFilterDate(preset) {
+            currentFilterDatePreset = preset;
+            document.querySelectorAll('.date-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-gray-800', 'text-white', 'border-gray-700');
+                btn.classList.add('bg-transparent', 'text-gray-400', 'border-gray-800');
+            });
+            const activeBtn = document.getElementById(`btnDate${preset.charAt(0).toUpperCase() + preset.slice(1)}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-gray-800', 'text-white', 'border-gray-700');
+            }
+            applyFilters();
+        }
+
+        // FILTER & SORT ENGINE
+        function applyFilters() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const maxPriceVal = parseInt(document.getElementById('priceRange').value);
+            document.getElementById('priceLabel').innerText = `S/ ${maxPriceVal}`;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = EVENTS_DATA.filter(evt => {
+                // Search term match
+                const matchSearch = evt.title.toLowerCase().includes(searchVal) || 
+                                    evt.city.toLowerCase().includes(searchVal) ||
+                                    evt.venue.toLowerCase().includes(searchVal);
+                // Category match
+                const matchCat = currentFilterCategory === 'Todos' || evt.category === currentFilterCategory;
+                // City match
+                const matchCity = currentFilterCity === 'ALL' || evt.city === currentFilterCity;
+                // Price match
+                const matchPrice = evt.minPrice <= maxPriceVal;
+
+                return matchSearch && matchCat && matchCity && matchPrice;
+            });
+
+            // Apply Sorting
+            if (sortBy === 'price-asc') {
+                filtered.sort((a, b) => a.minPrice - b.minPrice);
+            } else if (sortBy === 'price-desc') {
+                filtered.sort((a, b) => b.minPrice - a.minPrice);
+            } else {
+                filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+
+            renderEventGrid(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('priceRange').value = 500;
+            currentFilterCategory = 'Todos';
+            syncAndFilterCity('ALL');
+            setFilterDate('all');
+            renderCategories();
+            applyFilters();
+        }
+
+        // RENDER EVENT GRID
+        function renderEventGrid(events) {
+            const grid = document.getElementById('eventsGrid');
+            const emptyState = document.getElementById('emptyState');
+            document.getElementById('eventCountDisplay').innerText = events.length;
+
+            if (events.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = events.map(evt => `
+                <div class="wf-bg-card wf-border-solid rounded-xl overflow-hidden hover:border-gray-600 transition flex flex-col justify-between group">
+                    <!-- Image Placeholder Wireframe -->
+                    <div class="relative h-44 bg-gray-900 border-b border-gray-800 flex items-center justify-center p-4 overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent opacity-80"></div>
+                        <span class="font-mono text-xs text-gray-600 font-bold tracking-widest uppercase border border-gray-800 px-3 py-1 rounded">
+                            [ ${evt.imageText} ]
+                        </span>
+                        <span class="absolute top-3 left-3 bg-gray-950/80 border border-gray-700 text-gray-300 font-mono text-[10px] px-2 py-0.5 rounded">
+                            ${evt.badge}
+                        </span>
+                        <span class="absolute top-3 right-3 bg-gray-900/80 border border-gray-800 text-gray-400 font-mono text-[10px] px-2 py-0.5 rounded">
+                            ${evt.city}
+                        </span>
+                    </div>
+
+                    <!-- Card Body Info -->
+                    <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between text-[11px] font-mono text-gray-400 mb-1">
+                                <span><i class="fa-regular fa-calendar mr-1"></i> ${evt.displayDate}</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-gray-200 transition leading-snug">
+                                ${evt.title}
+                            </h3>
+                            <p class="text-xs text-gray-400 mt-1 flex items-center gap-1 font-mono">
+                                <i class="fa-solid fa-location-dot text-gray-500"></i> ${evt.venue}
+                            </p>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="pt-3 border-t border-gray-800 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] font-mono text-gray-500 block">Desde</span>
+                                <span class="text-sm font-bold font-mono text-white">S/ ${evt.minPrice}.00</span>
+                            </div>
+                            <button onclick="openEventDetail('${evt.id}')" class="px-3 py-1.5 bg-gray-100 hover:bg-white text-black font-mono font-bold text-xs rounded transition">
+                                Ver Tickets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // CAROUSEL LOGIC
+        function renderCarousel() {
+            const featured = EVENTS_DATA.filter(e => e.featured);
+            if (featured.length === 0) return;
+            
+            const current = featured[carouselIndex % featured.length];
+            const container = document.getElementById('carouselContainer');
+
+            container.innerHTML = `
+                <div class="space-y-3 z-10 max-w-2xl">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gray-800 border border-gray-700 text-gray-200 text-[11px] font-mono px-2 py-0.5 rounded uppercase">${current.category}</span>
+                        <span class="text-xs font-mono text-gray-400"><i class="fa-solid fa-location-dot mr-1"></i>${current.city} - ${current.venue}</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">${current.title}</h1>
+                    <p class="text-xs font-mono text-gray-400">Fecha del evento: ${current.displayDate}</p>
+                </div>
+
+                <div class="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-gray-800/80 pt-4 z-10">
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <span class="text-[10px] font-mono text-gray-500 block uppercase">Tiempo Restante Venta</span>
+                            <div class="font-mono text-sm sm:text-base font-bold text-white flex gap-2">
+                                <span class="bg-gray-900 px-2 py-1 rounded border border-gray-800" id="cd-hours">12h</span> :
+                                <span class="bg-gray-900 px-2 py-1 rounded border border-gray-800" id="cd-mins">45m</span> :
+                                <span class="bg-gray-900 px-2 py-1 rounded border border-gray-800" id="cd-secs">30s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-mono text-gray-300">Entradas desde <strong class="text-white text-sm">S/ ${current.minPrice}</strong></span>
+                        <button onclick="openEventDetail('${current.id}')" class="px-5 py-2 bg-gray-100 hover:bg-white text-black font-mono font-bold text-xs rounded transition">
+                            Reservar Ahora
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function nextCarousel() {
+            carouselIndex++;
+            renderCarousel();
+        }
+
+        function prevCarousel() {
+            carouselIndex--;
+            if (carouselIndex < 0) carouselIndex = EVENTS_DATA.length - 1;
+            renderCarousel();
+        }
+
+        function startCountdownTimer() {
+            let h = 12, m = 45, s = 30;
+            setInterval(() => {
+                s--;
+                if (s < 0) { s = 59; m--; }
+                if (m < 0) { m = 59; h--; }
+                const elH = document.getElementById('cd-hours');
+                const elM = document.getElementById('cd-mins');
+                const elS = document.getElementById('cd-secs');
+                if (elH) elH.innerText = `${h < 10 ? '0' : ''}${h}h`;
+                if (elM) elM.innerText = `${m < 10 ? '0' : ''}${m}m`;
+                if (elS) elS.innerText = `${s < 10 ? '0' : ''}${s}s`;
+            }, 1000);
+        }
+
+        // RENDER TOP RANKING SIDEBAR
+        function renderTopRanking() {
+            const container = document.getElementById('topRankingList');
+            const top3 = EVENTS_DATA.slice(0, 3);
+            container.innerHTML = top3.map((evt, idx) => `
+                <div onclick="openEventDetail('${evt.id}')" class="flex items-center gap-3 p-2 rounded hover:bg-gray-900 cursor-pointer transition border border-transparent hover:border-gray-800">
+                    <span class="font-mono text-base font-black text-gray-500 w-4">0${idx + 1}</span>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-white truncate">${evt.title}</h4>
+                        <span class="text-[10px] font-mono text-gray-500 block truncate">${evt.city} • S/ ${evt.minPrice}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-600"></i>
+                </div>
+            `).join('');
+        }
+
+        // OPEN EVENT DETAIL VIEW
+        function openEventDetail(eventId) {
+            selectedEventForDetail = EVENTS_DATA.find(e => e.id === eventId);
+            if (!selectedEventForDetail) return;
+
+            // Reset quantity counters
+            selectedTicketQuantities = { platinum: 0, vip: 0, general: 0 };
+
+            // Render Header Banner
+            const banner = document.getElementById('detailHeaderBanner');
+            banner.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gray-800 text-gray-300 font-mono text-xs px-2.5 py-0.5 rounded">${selectedEventForDetail.category}</span>
+                        <span class="text-xs font-mono text-gray-400">${selectedEventForDetail.city}</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white">${selectedEventForDetail.title}</h1>
+                    <p class="text-xs font-mono text-gray-400">
+                        <i class="fa-solid fa-location-dot mr-1 text-gray-500"></i> ${selectedEventForDetail.venue} &nbsp;|&nbsp; 
+                        <i class="fa-regular fa-calendar mr-1 text-gray-500"></i> ${selectedEventForDetail.displayDate}
+                    </p>
+                </div>
+                <div class="text-right flex flex-col items-end justify-between">
+                    <span class="text-xs font-mono text-gray-400">Estado: <span class="text-green-400 font-bold">VENTA ACTIVA</span></span>
+                    <span class="text-xs font-mono text-gray-500 mt-2">Capacidad Monitoreada en Vivo</span>
+                </div>
+            `;
+
+            // Render Ticket Selectors Controls
+            renderTicketSelectors();
+            updateDetailTotals();
+            switchView('detail');
+        }
+
+        // RENDER TICKET SELECTORS FOR ZONES
+        function renderTicketSelectors() {
+            const container = document.getElementById('ticketSelectors');
+            const zones = selectedEventForDetail.zones;
+
+            container.innerHTML = Object.keys(zones).map(key => {
+                const z = zones[key];
+                const qty = selectedTicketQuantities[key];
+                return `
+                    <div id="selector-box-${key}" class="wf-bg rounded-lg p-3 border border-gray-800 space-y-2 transition">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xs font-bold font-mono text-white">${z.name}</h4>
+                                <span class="text-[10px] font-mono text-gray-500">Stock: ${z.stock} disponibles</span>
+                            </div>
+                            <span class="text-sm font-bold font-mono text-white">S/ ${z.price}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-800">
+                            <span class="text-[11px] font-mono text-gray-400">Cantidad:</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeQty('${key}', -1)" class="w-7 h-7 bg-gray-800 hover:bg-gray-700 text-white rounded font-mono font-bold text-xs">-</button>
+                                <span class="w-6 text-center font-mono text-xs font-bold text-white">${qty}</span>
+                                <button onclick="changeQty('${key}', 1)" class="w-7 h-7 bg-gray-800 hover:bg-gray-700 text-white rounded font-mono font-bold text-xs">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // MAP SVG INTERACTION
+        function selectZone(zoneKey) {
+            // Toggle ticket quantity +1 if zone clicked on SVG map
+            if (selectedEventForDetail) {
+                changeQty(zoneKey, 1);
+                
+                // Highlight Map SVG Path
+                document.querySelectorAll('.zone-path').forEach(p => p.classList.remove('selected'));
+                const path = document.getElementById(`zone-${zoneKey}`);
+                if (path) path.classList.add('selected');
+
+                // Highlight box in UI
+                const box = document.getElementById(`selector-box-${zoneKey}`);
+                if (box) {
+                    box.classList.add('border-white');
+                    setTimeout(() => box.classList.remove('border-white'), 1000);
+                }
+            }
+        }
+
+        function changeQty(zoneKey, delta) {
+            const current = selectedTicketQuantities[zoneKey] || 0;
+            const maxStock = selectedEventForDetail.zones[zoneKey].stock;
+            const next = current + delta;
+
+            if (next >= 0 && next <= maxStock) {
+                selectedTicketQuantities[zoneKey] = next;
+                renderTicketSelectors();
+                updateDetailTotals();
+            }
+        }
+
+        function updateDetailTotals() {
+            let subtotal = 0;
+            let totalTickets = 0;
+
+            Object.keys(selectedTicketQuantities).forEach(key => {
+                const qty = selectedTicketQuantities[key];
+                const price = selectedEventForDetail.zones[key].price;
+                subtotal += qty * price;
+                totalTickets += qty;
+            });
+
+            const fee = subtotal * 0.10;
+            const total = subtotal + fee;
+
+            document.getElementById('detailSubtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('detailFee').innerText = `S/ ${fee.toFixed(2)}`;
+            document.getElementById('detailTotal').innerText = `S/ ${total.toFixed(2)}`;
+
+            const addBtn = document.getElementById('addToCartBtn');
+            if (totalTickets > 0) {
+                addBtn.disabled = false;
+                addBtn.classList.remove('bg-gray-800', 'text-gray-500');
+                addBtn.classList.add('bg-white', 'text-black');
+            } else {
+                addBtn.disabled = true;
+                addBtn.classList.add('bg-gray-800', 'text-gray-500');
+                addBtn.classList.remove('bg-white', 'text-black');
+            }
+        }
+
+        // ADD TO CART ACTION
+        function addSelectedTicketsToCart() {
+            Object.keys(selectedTicketQuantities).forEach(zoneKey => {
+                const qty = selectedTicketQuantities[zoneKey];
+                if (qty > 0) {
+                    const zoneObj = selectedEventForDetail.zones[zoneKey];
+                    // Check if already in cart
+                    const existingIndex = cart.findIndex(item => item.eventId === selectedEventForDetail.id && item.zoneKey === zoneKey);
+                    
+                    if (existingIndex > -1) {
+                        cart[existingIndex].quantity += qty;
+                    } else {
+                        cart.push({
+                            eventId: selectedEventForDetail.id,
+                            eventTitle: selectedEventForDetail.title,
+                            eventDate: selectedEventForDetail.displayDate,
+                            zoneKey: zoneKey,
+                            zoneName: zoneObj.name,
+                            unitPrice: zoneObj.price,
+                            quantity: qty
+                        });
+                    }
+                }
+            });
+
+            updateCartUI();
+            showToast("Tickets añadidos al carrito con éxito.");
+            switchView('checkout');
+        }
+
+        // UPDATE CART BADGES & MINI CART
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartBadgeCount').innerText = totalItems;
+            document.getElementById('miniCartCount').innerText = `${totalItems} ítems`;
+
+            const miniCartContent = document.getElementById('miniCartContent');
+            const miniBtn = document.getElementById('btnMiniCartCheckout');
+
+            if (cart.length === 0) {
+                miniCartContent.innerHTML = 'No tienes entradas seleccionadas.';
+                miniBtn.disabled = true;
+                miniBtn.classList.add('bg-gray-800', 'text-gray-500');
+                miniBtn.classList.remove('bg-white', 'text-black');
+            } else {
+                miniCartContent.innerHTML = cart.map(i => `
+                    <div class="flex justify-between items-center py-1 border-b border-gray-800">
+                        <span class="truncate max-w-[120px] text-gray-300">${i.quantity}x ${i.eventTitle} (${i.zoneName})</span>
+                        <span class="font-bold text-white">S/ ${i.unitPrice * i.quantity}</span>
+                    </div>
+                `).join('');
+                miniBtn.disabled = false;
+                miniBtn.classList.remove('bg-gray-800', 'text-gray-500');
+                miniBtn.classList.add('bg-white', 'text-black');
+            }
+        }
+
+        function renderCheckoutView() {
+            const container = document.getElementById('checkoutItemsList');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="wf-border rounded-xl p-8 text-center text-gray-500 font-mono space-y-3">
+                        <i class="fa-solid fa-cart-flatbed text-3xl text-gray-600"></i>
+                        <p>Tu carrito está vacío.</p>
+                        <button onclick="switchView('explore')" class="px-4 py-2 bg-gray-800 text-white rounded text-xs">Ir a Explorar Eventos</button>
+                    </div>
+                `;
+                document.getElementById('cartSubtotal').innerText = 'S/ 0.00';
+                document.getElementById('cartFee').innerText = 'S/ 0.00';
+                document.getElementById('cartTotal').innerText = 'S/ 0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map((item, idx) => {
+                const itemTotal = item.unitPrice * item.quantity;
+                subtotal += itemTotal;
+                return `
+                    <div class="wf-bg-card wf-border-solid rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 font-mono">
+                        <div class="space-y-1">
+                            <h4 class="text-sm font-bold text-white">${item.eventTitle}</h4>
+                            <p class="text-xs text-gray-400">Zona: <strong class="text-gray-200">${item.zoneName}</strong> - S/ ${item.unitPrice}.00 c/u</p>
+                            <span class="text-[10px] text-gray-500 block">${item.eventDate}</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateCartItemQty(${idx}, -1)" class="w-6 h-6 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs">-</button>
+                                <span class="text-xs font-bold text-white w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateCartItemQty(${idx}, 1)" class="w-6 h-6 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs">+</button>
+                            </div>
+                            <span class="text-sm font-bold text-white w-20 text-right">S/ ${itemTotal}.00</span>
+                            <button onclick="removeCartItem(${idx})" class="text-gray-500 hover:text-red-400 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const fee = subtotal * 0.10;
+            const total = subtotal + fee;
+
+            document.getElementById('cartSubtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('cartFee').innerText = `S/ ${fee.toFixed(2)}`;
+            document.getElementById('cartTotal').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function updateCartItemQty(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+            renderCheckoutView();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+            renderCheckoutView();
+        }
+
+        function handlePayment(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showToast("El carrito está vacío.");
+                return;
+            }
+
+            showToast("¡Pago procesado exitosamente! Tus e-Tickets han sido enviados.");
+            cart = [];
+            updateCartUI();
+            setTimeout(() => {
+                switchView('explore');
+            }, 1500);
+        }
+
+        // MODAL HELPERS
+        function showModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function submitB2BForm(e) {
+            e.preventDefault();
+            closeModal('modalB2B');
+            showToast("Solicitud B2B enviada. Un asesor se comunicará contigo.");
+        }
+
+        // TOAST NOTIFIER
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
