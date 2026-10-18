@@ -35,21 +35,53 @@ body{
 
 /* main */
 .hz-carrousel{
-    
+    aspect-ratio: 8 /  3.5;
+
+}
+
+.hz-aside-card{
+    min-height: min-content;
+    padding: 10px;
+}
+
+.hz-card{
+    background-color: #e8e5dd;
+    color: #1e1e1e;
+    border: 1px solid #1e1e1e6e;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    font-family: 'Urbanist', sans-serif;
+}
+
+.hz-card-img{
+    border: 1px 0px 1px 0px solid #0A0F23;
+    aspect-ratio: 8 / 4;
+}
+
+.hz-sb{
+    top: 5rem;
+    position: sticky;
 }
 
 /* footer */
 .hz-footer{
     color: #8D9E9B !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    
     h3{
         color: #F8E3D0 !important;
     }
     a{
     text-decoration: none !important;
-    color: inherit;}
-    font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
-    font-weight: 400;
+    color: inherit;
+    transition: 0.3s;   
+    &:hover{
+        color: #F8E3D0 !important;
+    }
+    }
 }
 /* Main color scheme */
 .hz-bg-main{
@@ -74,6 +106,12 @@ body{
 
 .hz-bg-fifth{
     background-color: #B30634;
+}
+
+
+.hz-bg-cool{
+    background: linear-gradient(to bottom, #111827, #030712);
+    color: #e8e5dd;
 }
 
 .hz-bg-dark-default{

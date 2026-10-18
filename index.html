@@ -15,6 +15,23 @@
 </head>
 <!--the "hz" class will be the default style prefix-->
 <body>
+    <div class="modal" tabindex="-1" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Let's sign you up</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <header class="hz-header sticky-top z-3">
         <nav class="navbar navbar-expand-md hz-bg-dark-default">
             <div class="container-lg border-secondary">
@@ -33,7 +50,9 @@
                     <div class="d-flex align-items-center gap-2 gap-md-3">
                         <button class="p-2">Flex item 1</button>
                         <button class="p-2">Flex item 2</button>
-                        <button class="p-2">Flex item 3</button>
+                        <button class=" type="button" class="p2" data-bs-toggle="modal" data-bs-target="#exampleModal"Modal>
+                            Modal
+                        </button>
                     </div>
                 </div>
             </div>
@@ -41,29 +60,53 @@
     </header>
     <main class="hz-bg-main">
         <div class="container-lg pt-2 pb-4">
-            <section class="card rounded-4 p-4 p-md-5 position-relative overflow-hidden hz-carrousel">
-                <img src="..." class="card-img" alt="...">
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small>Last updated 3 mins ago</small></p>
+            <section id="carouselExampleIndicators" class="carousel slide card hz-card hz-carrousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                    <img src="images/dump-files/images.png" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="images/dump-files/images (1).jfif" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="images/dump-files/images.jfif" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </section>
             <section class="row mt-4 m-1">
                 <div class="col-md-9">
+                    <div class="card hz-card hz-aside-card hz-bg-cool">
+                        <H2>lol</H2>
+                    </div>
                     <div class="row">
                         <div class="col-6">
-                                <article class="card hz-card">
+                            <article class="card hz-card">
+                                <img src="images/dump-files/images (1).jfif" class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
                             </article>
                             <article class="card hz-card">
+                                <img src="images/dump-files/images.jfif" class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
                             </article>
                             <article class="card hz-card">
+                                <img src="..." class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
@@ -71,16 +114,19 @@
                         </div>
                         <div class="col-6">
                                 <article class="card hz-card">
+                                    <img src="images/dump-files/theater.jpg" class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
                             </article>
                             <article class="card hz-card">
+                                <img src="..." class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
                             </article>
                             <article class="card hz-card">
+                                <img src="..." class="hz-card-img" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
                                 </div>
@@ -89,36 +135,31 @@
                     </div>
                 </div>
                 <!-- Sidebar -->
-                <aside class="col-md-3 sticky-top">
-                    <div class="card hz-card p-4 hz-card-border">
-                        <div class="card mb-2">
-                            <img src="..." class="card-img-top" alt="...">
-                        </div>
-                        <div class="card mb-2">
-                            <img src="..." class="card-img-top" alt="...">
-                        </div>
-                        <div class="card mb-2">
-                            <img src="..." class="card-img-top" alt="...">
-                        </div>
-                        <div class="card mb-2">
-                            <img src="..." class="card-img-top" alt="...">
-                        </div>
-                        <div class="card">
-                            <img src="..." class="card-img-top" alt="...">
-                        </div>
+                <aside class="col-md-3 z-1 hz-sb">
+                    <div class="card hz-card p-4 hz-card-border hz-aside-card hz-bg-cool">
+                    
+                    </div>
+                    <div class="card hz-card p-4 hz-aside-card hz-card-border">
+                    
+                    </div>
+                    <div class="card hz-card p-4 hz-aside-card hz-card-border">
+                    
+                    </div>
+                    <div class="card hz-card p-4 hz-aside-card hz-card-border">
+                    
                     </div>
                 </aside>
             </section>
         </div>
     </main>
-    <footer class="hz-bg-footer p-4">
+    <footer class="hz-bg-cool p-4">
         <section class="hz-footer container-lg">
             <div class="row">
                 <div class="col-md-4">
-                    <h3>Footer Content</h3>
+                    <h2>Horizon</h2>
                     <p>Here you can use rows and columns to organize your footer content.</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <h3>Links</h3>
                     <ul class="list-unstyled">
                         <li><a href="#!">Link 1</a></li>
@@ -127,8 +168,12 @@
                         <li><a href="#!">Link 4</a></li>
                     </ul>
                 </div>
+                <div class="col-md-2">
+                    <h3></h3>
+                    <p>Email:</p>
+                </div>
                 <div class="col-md-4">
-                    <h3>Contact</h3>
+                    <h3>Contactanos</h3>
                     <p>Email:</p>
                 </div>
             </div>
