@@ -57,6 +57,12 @@ body{
 .hz-card-img{
     border: 1px 0px 1px 0px solid #0A0F23;
     aspect-ratio: 8 / 4;
+    max-height: min-content;
+    overflow: hidden;
+    border-bottom: 1.5px solid #1e1e1e6e;
+    img{
+        width: 100%;
+    }
 }
 
 .hz-sb{
