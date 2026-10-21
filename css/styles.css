@@ -2,10 +2,7 @@
     box-sizing: border-box;
 }
 
-body{
-    margin: 0;
-}
-
+/* Header */
 .hz-header{
     border-bottom: 4px #B30634;
     border-style: solid;
@@ -39,9 +36,23 @@ body{
 
 }
 
+.hz-cat-icon{
+    background-color: #ece0d6;
+    max-height: 4.7rem;
+    border-radius: 100%;
+    padding: 10px;
+    aspect-ratio: 1 / 1;
+    img{
+        height: 3.3rem;
+    }
+}
+
 .hz-aside-card{
     min-height: min-content;
     padding: 10px;
+    align-items: stretch;
+    text-align: center;
+    line-height: 1.2rem;
 }
 
 .hz-card{

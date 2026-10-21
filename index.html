@@ -8,14 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">   
-    <!-- Urbanist -->
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <!-- Montserrat -->
+    <!-- Urbanist -->    <!-- Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <!--the "hz" class will be the default style prefix-->
 <body>
-    <div class="modal" tabindex="-1" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal" tabindex="-1" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -55,7 +53,7 @@
                     <div class="d-flex align-items-center gap-2 gap-md-3">
                         <button class="p-2">Flex item 1</button>
                         <button class="p-2">Flex item 2</button>
-                        <button class=" type="button" class="p2" data-bs-toggle="modal" data-bs-target="#exampleModal"Modal>
+                        <button type="button" class="p-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Modal
                         </button>
                     </div>
@@ -94,64 +92,89 @@
             <section class="row mt-4 m-1">
                 <div class="col-md-9">
                     <div class="card hz-card hz-aside-card hz-bg-cool">
-                        <H2>lol</H2>
+                        <div class="d-flex justify-content-evenly">
+                            <div>
+                                <div class="hz-cat-icon">
+                                    <img src="images/icons/icon/fest.png" alt="fest">
+                                </div>
+                                <span>Festivals</span>
+                            </div>
+                            <div>
+                                <div class="hz-cat-icon">
+                                    <img src="images/icons/icon/theater.png" alt="theater">
+                                </div>
+                                <span>Theaters</span>
+                            </div>
+                            <div>
+                                <div class="hz-cat-icon">
+                                    <img src="images/icons/icon/images (1).png" alt="">
+                                </div>
+                                <span>Food-snacks</span>
+                            </div>
+                            <div>
+                                <div class="hz-cat-icon">
+                                    <img src="images/icons/icon/images.png" alt="">
+                                </div>
+                                <span>Jams</span>
+                            </div>
+                        </div>
                     </div>
-                        <div class="row">
-                            <div class="row">
-                            <div class="col-md-6">
-                                <article class="card hz-card">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <article class="card hz-card">
+                                <div class="hz-card-img">
+                                    <img src="images/dump-files/images (1).jfif" class="hz-card-img" alt="Festival">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Festival Horizon</h3>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="hz-card-img">
+                                    <img src="images/dump-files/images.jfif" class="hz-card-img" alt="...">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Colorado Racing Event</h3>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
                                     <div class="hz-card-img">
-                                        <img src="images/dump-files/images (1).jfif" class="hz-card-img" alt="...">
+                                        <img src="" alt="">
                                     </div>
-                                    
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                                <article class="card hz-card">
-                                        <div class="hz-card-img">
-                                            <img src="images/dump-files/images.jfif" class="hz-card-img" alt="...">
-                                        </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                                <article class="card hz-card">
-                                        <div class="hz-card-img">
-                                            <img src="" alt="">
-                                        </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                            </div>
-                            <div class="col-md-6">
-                                    <article class="card hz-card">
-                                        
-                                        <div class="hz-card-img">
-                                            <img src="images/dump-files/theater.jpg" class="hz-card-img" alt="...">
-                                        </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                                <article class="card hz-card">
-                                        <div class="hz-card-img">
-                                            <img src="images/dump-files/maxresdefault.jpg" alt="...">
-                                        </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                                <article class="card hz-card">
-                                        <div class="hz-card-img">
-                                            <img src="" alt="">
-                                        </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                    </div>
-                                </article>
-                            </div>
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="col-md-6">
+                            <article class="card hz-card">
+                                <div class="hz-card-img">
+                                    <img src="images/dump-files/theater.jpg" class="hz-card-img" alt="Theater">
+                                </div>
+                                <div class="card-body">
+                                    <h3>Theater Show</h3>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="hz-card-img">
+                                    <img src="images/dump-files/maxresdefault.jpg" alt="Nujabes">
+                                </div>
+                                <div class="card-body">
+                                    <h3>NUJABES played by OMA</h3>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
+                            <article class="card hz-card">
+                                <div class="hz-card-img">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+                                </div>
+                            </article>
                         </div>
                     </div>
                 </div>
