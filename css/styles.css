@@ -76,6 +76,28 @@
     }
 }
 
+.hz-price-tag{
+    font-style: italic;
+    font-size: 18px;
+}
+
+.hz-price-tag, .hz-btn-sub{
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500;
+
+}
+
+.hz-btn-sub{
+    border: 3px solid #B30634;
+    border-radius: 80px;
+    background-color: #ffffff00;
+    transition: 0.5s;
+    &:hover{
+        background-color: #B30634;
+        color: #fff;
+    }
+}
+
 .hz-sb{
     top: 5rem;
     position: sticky;

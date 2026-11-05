@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HORIZON - Wireframe Plataforma de Eventos</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f1115;
+            color: #d1d5db;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Technical Blueprint Wireframe Aesthetics */
+        .wf-border {
+            border: 1px dashed #374151;
+        }
+
+        .wf-border-solid {
+            border: 1px solid #374151;
+        }
+
+        .wf-bg {
+            background-color: #161a22;
+        }
+
+        .wf-bg-card {
+            background-color: #1c212c;
+        }
+
+        /* Custom Scrollbar for wireframe feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+
+        /* Interactive Map SVG Hover Styles */
+        .zone-path {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .zone-path:hover {
+            fill-opacity: 0.85;
+            stroke-width: 3;
+        }
+        .zone-path.selected {
+            stroke: #ffffff !important;
+            stroke-width: 3 !important;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+        }
+
+        /* Bootstrap override fixes for dark blueprint aesthetic */
+        .form-control, .form-select {
+            background-color: #111827;
+            border-color: #374151;
+            color: #e5e7eb;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #111827;
+            border-color: #9ca3af;
+            color: #ffffff;
+            box-shadow: none;
+        }
+        .form-control::placeholder {
+            color: #6b7280;
+        }
+        .modal-content.wf-bg-card {
+            background-color: #1c212c;
+            border: 1px solid #374151;
+            color: #d1d5db;
+        }
+
+        /* Sticky Sidebar Behavior Fix */
+        .sticky-sidebar {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 80px;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="min-vh-100 d-flex flex-column justify-content-between selection:bg-secondary selection:text-white">
+
+    <!-- TOPBAR HEADER -->
+    <header class="wf-bg border-bottom border-secondary sticky-top z-3">
+        <div class="container-xxl px-3 px-md-4 py-3 d-flex align-items-center justify-content-between gap-3">
+            <!-- Brand Logo -->
+            <div class="d-flex align-items-center gap-2 cursor-pointer" role="button" onclick="switchView('explore')">
+                <div class="bg-light text-dark fw-black d-flex align-items-center justify-content-center rounded font-mono tracking-tighter fs-4" style="width: 38px; height: 38px;">
+                    HZ
+                </div>
+                <div>
+                    <span class="fs-5 fw-black tracking-widest text-white font-mono d-block lh-1">HORIZON</span>
+                    <span style="font-size: 10px;" class="font-mono text-secondary tracking-wider">TICKETING // PLATFORM</span>
+                </div>
+            </div>
+
+            <!-- Global Search -->
+            <div class="flex-grow-1 max-w-md d-none d-md-block" style="max-width: 400px;">
+                <div class="position-relative">
+                    <i class="fa-solid fa-magnifying-glass position-absolute start-0 top-50 translate-middle-y ms-3 text-secondary small"></i>
+                    <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Buscar artistas, eventos, ciudades..." class="form-control form-control-sm ps-5 py-2 font-mono text-xs">
+                </div>
+            </div>
+
+            <!-- Location Selector & Quick Actions -->
+            <div class="d-flex align-items-center gap-2 gap-md-3 small font-mono">
+                <!-- Location Dropdown -->
+                <div class="d-flex align-items-center bg-dark wf-border-solid rounded px-2 py-1 text-xs text-secondary">
+                    <i class="fa-solid fa-location-dot text-secondary me-2"></i>
+                    <select id="cityFilterTop" onchange="syncAndFilterCity(this.value)" class="bg-transparent border-0 text-white cursor-pointer pe-1 focus-ring focus-ring-dark">
+                        <option value="ALL" class="bg-dark text-white">Perú (Todas)</option>
+                        <option value="Lima" class="bg-dark text-white">Lima</option>
+                        <option value="Arequipa" class="bg-dark text-white">Arequipa</option>
+                        <option value="Cusco" class="bg-dark text-white">Cusco</option>
+                        <option value="Trujillo" class="bg-dark text-white">Trujillo</option>
+                    </select>
+                </div>
+
+                <!-- Create Event CTA -->
+                <button onclick="showModal('modalB2B')" class="d-none d-sm-flex align-items-center gap-2 px-3 py-1 rounded text-xs wf-border-solid bg-transparent text-secondary hover-bg-gray transition">
+                    <i class="fa-solid fa-plus text-secondary"></i>
+                    <span>Crear Evento</span>
+                </button>
+
+                <!-- My Cart Button / Badge -->
+                <button onclick="switchView('checkout')" class="position-relative d-flex align-items-center gap-2 bg-light text-dark px-3 py-1.5 rounded text-xs fw-semibold border-0">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span class="d-none d-sm-inline">Mis Tickets</span>
+                    <span id="cartBadgeCount" class="position-absolute top-0 start-100 translate-middle bg-dark text-white rounded-circle d-flex align-items-center justify-content-center font-mono" style="width: 18px; height: 18px; font-size: 10px;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="container-xxl px-3 px-md-4 py-4 flex-grow-1 w-100">
+
+        <!-- VIEW 1: EXPLORE EVENTS -->
+        <div id="viewExplore" class="vstack gap-4">
+            
+            <!-- SECTION 1: TOP FEATURED CAROUSEL / HERO -->
+            <section class="wf-border-solid wf-bg-card rounded-4 p-4 p-md-5 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom border-secondary pb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="d-inline-block rounded-circle bg-danger" style="width: 8px; height: 8px; animation: ping 1.5s infinite;"></span>
+                        <h2 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-widest text-secondary mb-0">Destacados // En Vivo Countdown</h2>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button onclick="prevCarousel()" class="btn btn-sm wf-border-solid text-secondary px-2 py-1 rounded d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-chevron-left small"></i>
+                        </button>
+                        <button onclick="nextCarousel()" class="btn btn-sm wf-border-solid text-secondary px-2 py-1 rounded d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-chevron-right small"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="carouselContainer" class="position-relative min-vh-25 d-flex flex-column justify-content-between">
+                    <!-- Dynamic Slide Content -->
+                </div>
+            </section>
+
+            <!-- SECTION 2: MAIN BODY - LEFT CONTENT (72%) & RIGHT SIDEBAR (28%) -->
+            <div class="row g-4 align-items-start">
+                
+                <!-- MAIN LEFT COLUMN (~72%): CATEGORIES & EVENT GRID -->
+                <div class="col-lg-8 space-y-4">
+                    
+                    <!-- Category Chips -->
+                    <div class="d-flex align-items-center justify-content-between gap-2 border-bottom border-secondary pb-3 overflow-x-auto">
+                        <div class="d-flex align-items-center gap-2" id="categoryChipList">
+                            <!-- Category chips rendered via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Events Header Controls -->
+                    <div class="d-flex align-items-center justify-content-between font-mono text-xs text-secondary">
+                        <div>
+                            <span>Mostrando <strong id="eventCountDisplay" class="text-white">0</strong> eventos</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="sortBy">Ordenar por:</label>
+                            <select id="sortBy" onchange="applyFilters()" class="form-select form-select-sm bg-dark text-secondary border-secondary py-1 text-xs">
+                                <option value="date">Fecha más cercana</option>
+                                <option value="price-asc">Precio: Menor a Mayor</option>
+                                <option value="price-desc">Precio: Mayor a Menor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Event Grid -->
+                    <div id="eventsGrid" class="row row-cols-1 row-cols-md-2 g-4">
+                        <!-- Event Cards injected via JS -->
+                    </div>
+
+                    <!-- Empty State Placeholder -->
+                    <div id="emptyState" class="d-none wf-border rounded-4 p-5 text-center text-secondary font-mono vstack gap-3">
+                        <i class="fa-solid fa-filter-circle-xmark fa-2x mb-2 text-secondary"></i>
+                        <p class="fs-6 text-light">No se encontraron eventos con los filtros seleccionados.</p>
+                        <button onclick="resetFilters()" class="btn btn-dark wf-border-solid text-white rounded px-4 py-2 text-xs">Limpiar Filtros</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR COLUMN (~28%): FILTERS, TOP RANKING, B2B, CART SUMMARY -->
+                <aside class="col-lg-4 vstack gap-4 sticky-sidebar">
+                    
+                    <!-- Quick Filters Panel -->
+                    <div class="wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-4">
+                        <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-3">
+                            <h3 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-wider text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-sliders text-secondary"></i> Filtros Rápidos
+                            </h3>
+                            <button onclick="resetFilters()" style="font-size: 11px;" class="font-mono text-secondary bg-transparent border-0 text-decoration-underline p-0">Restablecer</button>
+                        </div>
+
+                        <!-- Filter City -->
+                        <div class="vstack gap-1">
+                            <label style="font-size: 11px;" class="font-mono text-secondary">Ciudad</label>
+                            <select id="sidebarCityFilter" onchange="syncAndFilterCity(this.value)" class="form-select form-select-sm bg-dark text-light border-secondary text-xs">
+                                <option value="ALL">Todas las ciudades</option>
+                                <option value="Lima">Lima</option>
+                                <option value="Arequipa">Arequipa</option>
+                                <option value="Cusco">Cusco</option>
+                                <option value="Trujillo">Trujillo</option>
+                            </select>
+                        </div>
+
+                        <!-- Price Range Slider -->
+                        <div class="vstack gap-2">
+                            <div class="d-flex justify-content-between align-items-center font-mono text-xs">
+                                <span class="text-secondary">Precio Máximo:</span>
+                                <span id="priceLabel" class="text-white fw-bold">S/ 500</span>
+                            </div>
+                            <input type="range" id="priceRange" min="50" max="500" step="10" value="500" oninput="applyFilters()" class="form-range bg-dark cursor-pointer">
+                            <div class="d-flex justify-content-between font-mono text-secondary" style="font-size: 10px;">
+                                <span>S/ 50</span>
+                                <span>S/ 500+</span>
+                            </div>
+                        </div>
+
+                        <!-- Date Quick Preset -->
+                        <div class="vstack gap-1">
+                            <label style="font-size: 11px;" class="font-mono text-secondary">Fecha</label>
+                            <div class="row g-1 font-mono" style="font-size: 11px;">
+                                <div class="col-4">
+                                    <button onclick="setFilterDate('all')" id="btnDateAll" class="date-btn active btn btn-sm w-100 border border-secondary bg-secondary text-white py-1 rounded text-center">Todos</button>
+                                </div>
+                                <div class="col-4">
+                                    <button onclick="setFilterDate('weekend')" id="btnDateWeekend" class="date-btn btn btn-sm w-100 border border-secondary bg-transparent text-secondary py-1 rounded text-center">Este Finde</button>
+                                </div>
+                                <div class="col-4">
+                                    <button onclick="setFilterDate('month')" id="btnDateMonth" class="date-btn btn btn-sm w-100 border border-secondary bg-transparent text-secondary py-1 rounded text-center">Este Mes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Cart / Quick Summary -->
+                    <div class="wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-3">
+                        <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-2">
+                            <h4 style="font-size: 0.75rem;" class="font-mono text-light fw-bold mb-0 d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-cart-shopping text-secondary"></i> Mi Carrito
+                            </h4>
+                            <span id="miniCartCount" class="font-mono bg-dark px-2 py-0.5 rounded text-secondary" style="font-size: 10px;">0 ítems</span>
+                        </div>
+                        <div id="miniCartContent" class="font-mono text-secondary py-2" style="font-size: 11px;">
+                            No tienes entradas seleccionadas.
+                        </div>
+                        <button onclick="switchView('checkout')" id="btnMiniCartCheckout" disabled class="btn btn-sm btn-dark wf-border-solid text-secondary font-mono fw-bold text-xs py-2 w-100">
+                            Ir a Pagar
+                        </button>
+                    </div>
+
+                    <!-- Top Events Ranking Section -->
+                    <div class="wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-3">
+                        <h3 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-wider text-white fw-bold d-flex align-items-center gap-2 border-bottom border-secondary pb-3 mb-0">
+                            <i class="fa-solid fa-fire text-warning"></i> Top Tendencias
+                        </h3>
+                        <div class="vstack gap-2" id="topRankingList">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- B2B Section for Event Organizers -->
+                    <div class="wf-border rounded-4 p-4 vstack gap-3" style="background: linear-gradient(to bottom, #111827, #030712);">
+                        <div class="rounded bg-dark wf-border-solid d-flex align-items-center justify-content-center text-white small" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <h4 class="fs-6 fw-bold text-white mb-0">¿Organizas un evento?</h4>
+                        <p class="text-secondary small mb-0 lh-base">
+                            Publica tu concierto o festival en HORIZON. Control de aforo en tiempo real y comisiones transparentes.
+                        </p>
+                        <button onclick="showModal('modalB2B')" class="btn btn-light font-mono fw-bold text-dark text-xs py-2 w-100 rounded">
+                            Publicar Evento
+                        </button>
+                    </div>
+
+                </aside>
+            </div>
+        </div>
+
+        <!-- VIEW 2: EVENT DETAIL & INTERACTIVE VENUE MAP SELECTION -->
+        <div id="viewDetail" class="d-none vstack gap-4">
+            <!-- Back Navigation -->
+            <button onclick="switchView('explore')" class="btn btn-link text-secondary text-decoration-none font-mono text-xs p-0 align-self-start">
+                <i class="fa-solid fa-arrow-left me-2"></i> Volver a Explorar Eventos
+            </button>
+
+            <!-- Event Header Info Banner -->
+            <div id="detailHeaderBanner" class="wf-bg-card wf-border-solid rounded-4 p-4 p-md-5 d-flex flex-column flex-md-row gap-4 justify-content-between align-items-start">
+                <!-- Dynamically Populated -->
+            </div>
+
+            <!-- Interactive Seating / Map & Ticket Selector Layout -->
+            <div class="row g-4 align-items-start">
+                
+                <!-- SVG Interactive Map (2 Columns) -->
+                <div class="col-lg-8 wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-3">
+                    <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-3">
+                        <h3 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-wider text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-secondary"></i> Mapa Interactivo del Recinto
+                        </h3>
+                        <span style="font-size: 11px;" class="font-mono text-secondary">Haz clic en una zona para seleccionarla</span>
+                    </div>
+
+                    <!-- SVG Venue Stadium Map Wireframe -->
+                    <div class="position-relative bg-dark rounded-3 p-3 wf-border-solid d-flex flex-column align-items-center overflow-hidden">
+                        <svg viewBox="0 0 600 380" class="w-100 h-auto select-none" style="max-width: 520px;">
+                            <!-- Stage -->
+                            <rect x="180" y="20" width="240" height="40" rx="4" fill="#1f2937" stroke="#4b5563" stroke-width="2" />
+                            <text x="300" y="45" fill="#e5e7eb" font-family="JetBrains Mono" font-size="12" font-weight="bold" text-anchor="middle">escenario / STAGE</text>
+                            
+                            <!-- Sound Booth -->
+                            <rect x="250" y="210" width="100" height="25" rx="2" fill="#111827" stroke="#374151" />
+                            <text x="300" y="226" fill="#6b7280" font-family="JetBrains Mono" font-size="9" text-anchor="middle">CONTROL DE AUDIO</text>
+
+                            <!-- Platinum Zone (Front Stage) -->
+                            <path d="M 120 75 L 480 75 L 450 140 L 150 140 Z" class="zone-path" id="zone-platinum" fill="#312e81" fill-opacity="0.6" stroke="#6366f1" stroke-width="2" onclick="selectZone('platinum')" />
+                            <text x="300" y="112" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA PLATINUM</text>
+
+                            <!-- VIP Zone (Mid Arena) -->
+                            <path d="M 140 150 L 460 150 L 430 230 L 170 230 Z" class="zone-path" id="zone-vip" fill="#065f46" fill-opacity="0.6" stroke="#10b981" stroke-width="2" onclick="selectZone('vip')" />
+                            <text x="300" y="185" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA VIP</text>
+
+                            <!-- General Zone (Back Arena) -->
+                            <path d="M 110 245 L 490 245 L 530 350 L 70 350 Z" class="zone-path" id="zone-general" fill="#1e293b" fill-opacity="0.8" stroke="#64748b" stroke-width="2" onclick="selectZone('general')" />
+                            <text x="300" y="300" fill="#ffffff" font-family="JetBrains Mono" font-size="13" font-weight="bold" text-anchor="middle" pointer-events="none">ZONA GENERAL</text>
+                        </svg>
+
+                        <!-- Legend -->
+                        <div class="d-flex flex-wrap justify-content-center gap-4 mt-3 pt-3 border-top border-secondary w-100 font-mono text-xs">
+                            <div class="d-flex align-items-center gap-2 cursor-pointer" onclick="selectZone('platinum')">
+                                <span class="rounded bg-indigo d-inline-block" style="width: 12px; height: 12px; background-color: #312e81; border: 1px solid #6366f1;"></span> Platinum
+                            </div>
+                            <div class="d-flex align-items-center gap-2 cursor-pointer" onclick="selectZone('vip')">
+                                <span class="rounded d-inline-block" style="width: 12px; height: 12px; background-color: #065f46; border: 1px solid #10b981;"></span> VIP
+                            </div>
+                            <div class="d-flex align-items-center gap-2 cursor-pointer" onclick="selectZone('general')">
+                                <span class="rounded d-inline-block" style="width: 12px; height: 12px; background-color: #1e293b; border: 1px solid #64748b;"></span> General
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Customizer & Pricing Sidebar -->
+                <div class="col-lg-4 wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-4">
+                    <h3 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-wider text-white fw-bold border-bottom border-secondary pb-3 mb-0">
+                        Selección de Entradas
+                    </h3>
+
+                    <!-- Dynamic Zone Ticket Selector -->
+                    <div id="ticketSelectors" class="vstack gap-3">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                    <!-- Breakdown & Fee Summary -->
+                    <div class="wf-bg rounded-3 p-3 wf-border-solid vstack gap-2 font-mono text-xs">
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>Subtotal Tickets:</span>
+                            <span id="detailSubtotal" class="text-light">S/ 0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span>Comisión Servicio (10%):</span>
+                            <span id="detailFee" class="text-light">S/ 0.00</span>
+                        </div>
+                        <div class="border-top border-secondary pt-2 d-flex justify-content-between text-sm fw-bold text-white">
+                            <span>Total Est.:</span>
+                            <span id="detailTotal" class="text-success">S/ 0.00</span>
+                        </div>
+                    </div>
+
+                    <button onclick="addSelectedTicketsToCart()" id="addToCartBtn" disabled class="btn btn-light font-mono fw-bold text-dark text-xs py-3 rounded text-uppercase tracking-wider">
+                        Añadir al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: CART & CHECKOUT INTERACTIVE -->
+        <div id="viewCheckout" class="d-none vstack gap-4">
+            <button onclick="switchView('explore')" class="btn btn-link text-secondary text-decoration-none font-mono text-xs p-0 align-self-start">
+                <i class="fa-solid fa-arrow-left me-2"></i> Seguir Comprando
+            </button>
+
+            <h2 class="fs-5 fw-bold font-mono text-white border-bottom border-secondary pb-3 mb-0">
+                Resumen de Compra & Checkout
+            </h2>
+
+            <div class="row g-4 align-items-start">
+                <!-- Cart Items List -->
+                <div class="col-lg-8 vstack gap-3" id="checkoutItemsList">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Payment Form Wireframe -->
+                <div class="col-lg-4 wf-bg-card wf-border-solid rounded-4 p-4 vstack gap-4">
+                    <h3 style="font-size: 0.75rem;" class="font-mono text-uppercase tracking-wider text-white fw-bold border-bottom border-secondary pb-3 mb-0">
+                        Detalles de Pago
+                    </h3>
+
+                    <form onsubmit="handlePayment(event)" class="vstack gap-3 font-mono text-xs">
+                        <div>
+                            <label class="d-block text-secondary mb-1">Nombre Completo</label>
+                            <input type="text" required placeholder="Juan Pérez" class="form-control form-control-sm bg-dark border-secondary text-white">
+                        </div>
+                        <div>
+                            <label class="d-block text-secondary mb-1">Correo Electrónico (para e-Tickets)</label>
+                            <input type="email" required placeholder="usuario@correo.com" class="form-control form-control-sm bg-dark border-secondary text-white">
+                        </div>
+                        <div>
+                            <label class="d-block text-secondary mb-1">Método de Pago</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="border border-secondary bg-dark rounded p-2 d-flex align-items-center gap-2 cursor-pointer w-100">
+                                        <input type="radio" name="payment" value="card" checked class="form-check-input mt-0"> Tarjeta Cr/Déb
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <label class="border border-secondary bg-dark rounded p-2 d-flex align-items-center gap-2 cursor-pointer w-100">
+                                        <input type="radio" name="payment" value="yape" class="form-check-input mt-0"> Yape / Plin
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Order Totals -->
+                        <div class="wf-bg rounded-3 p-3 vstack gap-1 text-secondary pt-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Monto Entradas:</span>
+                                <span id="cartSubtotal" class="text-light">S/ 0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Cargo Servicio:</span>
+                                <span id="cartFee" class="text-light">S/ 0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold text-white fs-6 border-top border-secondary pt-2 mt-2">
+                                <span>Total a Pagar:</span>
+                                <span id="cartTotal" class="text-success">S/ 0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnPayNow" class="btn btn-success fw-bold font-mono text-dark text-xs py-3 rounded text-uppercase tracking-wider w-100">
+                            Confirmar y Procesar Compra
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL B2B ORGANIZADORES (Bootstrap Modal Wrapper) -->
+    <div class="modal fade" id="modalB2B" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content wf-bg-card wf-border-solid rounded-4 p-4 font-mono">
+                <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-3">
+                    <h3 class="fs-6 fw-bold text-white mb-0">Publica tu Evento en HORIZON</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <p class="text-secondary small mb-3">Ingresa la información básica de tu propuesta y un asesor B2B se contactará en breve.</p>
+                
+                <form onsubmit="submitB2BForm(event)" class="vstack gap-3 text-xs">
+                    <div>
+                        <label class="d-block text-secondary mb-1">Nombre de la Productora / Organizador</label>
+                        <input type="text" required class="form-control form-control-sm bg-dark border-secondary text-white">
+                    </div>
+                    <div>
+                        <label class="d-block text-secondary mb-1">Nombre del Evento</label>
+                        <input type="text" required class="form-control form-control-sm bg-dark border-secondary text-white">
+                    </div>
+                    <div>
+                        <label class="d-block text-secondary mb-1">Aforo Estimado</label>
+                        <select class="form-select form-select-sm bg-dark border-secondary text-white">
+                            <option>500 - 1,000 personas</option>
+                            <option>1,000 - 5,000 personas</option>
+                            <option>Más de 5,000 personas</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-light fw-bold rounded text-dark py-2 mt-2 w-100">
+                        Enviar Solicitud
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastNotification" class="position-fixed bottom-0 end-0 p-3 z-50 d-none">
+        <div class="wf-bg-card border border-success text-white px-4 py-3 rounded-4 shadow-lg font-mono text-xs d-flex align-items-center gap-3">
+            <i class="fa-solid fa-circle-check text-success fs-5"></i>
+            <span id="toastMessage">Operación realizada con éxito</span>
+        </div>
+    </div>
+
+    <!-- FOOTER WIREFRAME -->
+    <footer class="wf-bg border-top border-secondary py-4 mt-5 text-center text-xs font-mono text-secondary">
+        <div class="container-xxl px-4 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold text-light">HORIZON</span> - Prototipo Wireframe Digital &copy; 2026
+            </div>
+            <div class="d-flex gap-4">
+                <a href="#" class="text-secondary text-decoration-none hover-text-white">Términos</a>
+                <a href="#" class="text-secondary text-decoration-none hover-text-white">Privacidad</a>
+                <a href="#" class="text-secondary text-decoration-none hover-text-white">Soporte B2B</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // MOCK DATA: EVENT DATABASE
+        const EVENTS_DATA = [
+            {
+                id: 'evt-1',
+                title: 'NEON WAVE FESTIVAL 2026',
+                category: 'Festivales',
+                city: 'Lima',
+                venue: 'Jardines del Parque de la Exposición',
+                date: '2026-11-15',
+                displayDate: '15 NOV 2026 - 18:00 HRS',
+                minPrice: 180,
+                featured: true,
+                badge: 'SOLDOUT NEAR',
+                imageText: 'NEON WAVE FESTIVAL',
+                zones: {
+                    platinum: { name: 'Platinum Stage', price: 350, stock: 15 },
+                    vip: { name: 'VIP Dancefloor', price: 240, stock: 40 },
+                    general: { name: 'General', price: 180, stock: 120 }
+                }
+            },
+            {
+                id: 'evt-2',
+                title: 'SYNTHESIS ELECTRONIC NIGHT',
+                category: 'Electrónica',
+                city: 'Lima',
+                venue: 'Costa Verde Hall',
+                date: '2026-10-28',
+                displayDate: '28 OCT 2026 - 22:00 HRS',
+                minPrice: 120,
+                featured: true,
+                badge: 'POPULAR',
+                imageText: 'SYNTHESIS NIGHT',
+                zones: {
+                    platinum: { name: 'Platinum DJ Booth', price: 280, stock: 8 },
+                    vip: { name: 'VIP Terrace', price: 190, stock: 25 },
+                    general: { name: 'General Field', price: 120, stock: 80 }
+                }
+            },
+            {
+                id: 'evt-3',
+                title: 'AREQUIPA ROCK SYMPHONY',
+                category: 'Conciertos',
+                city: 'Arequipa',
+                venue: 'Jardín de la Cerveza',
+                date: '2026-12-05',
+                displayDate: '05 DIC 2026 - 20:00 HRS',
+                minPrice: 90,
+                featured: false,
+                badge: 'NUEVO',
+                imageText: 'ROCK SYMPHONY',
+                zones: {
+                    platinum: { name: 'Platinum Front', price: 210, stock: 30 },
+                    vip: { name: 'VIP Preferencial', price: 140, stock: 60 },
+                    general: { name: 'General APAL', price: 90, stock: 200 }
+                }
+            },
+            {
+                id: 'evt-4',
+                title: 'CUSCO INDIE INDEPENDIENTE',
+                category: 'Fiestas',
+                city: 'Cusco',
+                venue: 'Teatro Municipal del Cusco',
+                date: '2026-11-20',
+                displayDate: '20 NOV 2026 - 19:30 HRS',
+                minPrice: 75,
+                featured: false,
+                badge: 'INTIMO',
+                imageText: 'CUSCO INDIE',
+                zones: {
+                    platinum: { name: 'Platinum Central', price: 160, stock: 12 },
+                    vip: { name: 'VIP Platea', price: 110, stock: 30 },
+                    general: { name: 'General Galería', price: 75, stock: 50 }
+                }
+            },
+            {
+                id: 'evt-5',
+                title: 'TRUJILLO URBAN BEATS',
+                category: 'Conciertos',
+                city: 'Trujillo',
+                venue: 'Mall Plaza Explanada',
+                date: '2026-11-02',
+                displayDate: '02 NOV 2026 - 21:00 HRS',
+                minPrice: 110,
+                featured: false,
+                badge: 'ESTRENO',
+                imageText: 'URBAN BEATS',
+                zones: {
+                    platinum: { name: 'Platinum Box', price: 260, stock: 20 },
+                    vip: { name: 'VIP Zone', price: 170, stock: 45 },
+                    general: { name: 'General Zone', price: 110, stock: 150 }
+                }
+            },
+            {
+                id: 'evt-6',
+                title: 'TEATRO NOCTURNO: MISTERIOS',
+                category: 'Teatro',
+                city: 'Lima',
+                venue: 'Teatro Peruano Japonés',
+                date: '2026-10-31',
+                displayDate: '31 OCT 2026 - 20:30 HRS',
+                minPrice: 60,
+                featured: false,
+                badge: 'EDICIÓN ESPECIAL',
+                imageText: 'TEATRO MISTERIOS',
+                zones: {
+                    platinum: { name: 'Platinum Filas 1-5', price: 150, stock: 10 },
+                    vip: { name: 'VIP Filas 6-15', price: 100, stock: 25 },
+                    general: { name: 'General Mezzanine', price: 60, stock: 60 }
+                }
+            }
+        ];
+
+        // CATEGORIES LIST
+        const CATEGORIES = ['Todos', 'Conciertos', 'Festivales', 'Fiestas', 'Electrónica', 'Teatro'];
+
+        // STATE MANAGEMENT
+        let currentFilterCategory = 'Todos';
+        let currentFilterCity = 'ALL';
+        let currentFilterMaxPrice = 500;
+        let currentFilterDatePreset = 'all';
+        let carouselIndex = 0;
+        let selectedEventForDetail = null;
+        let selectedTicketQuantities = { platinum: 0, vip: 0, general: 0 };
+        let cart = [];
+
+        window.onload = function() {
+            renderCategories();
+            renderCarousel();
+            renderTopRanking();
+            applyFilters();
+            startCountdownTimer();
+        };
+
+        // NAVIGATION VIEW SWITCHER
+        function switchView(viewName) {
+            document.getElementById('viewExplore').classList.add('d-none');
+            document.getElementById('viewDetail').classList.add('d-none');
+            document.getElementById('viewCheckout').classList.add('d-none');
+
+            if (viewName === 'explore') {
+                document.getElementById('viewExplore').classList.remove('d-none');
+            } else if (viewName === 'detail') {
+                document.getElementById('viewDetail').classList.remove('d-none');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (viewName === 'checkout') {
+                document.getElementById('viewCheckout').classList.remove('d-none');
+                renderCheckoutView();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // RENDER CATEGORY CHIPS
+        function renderCategories() {
+            const container = document.getElementById('categoryChipList');
+            container.innerHTML = CATEGORIES.map(cat => {
+                const isActive = cat === currentFilterCategory;
+                return `
+                    <button onclick="selectCategory('${cat}')" 
+                        class="btn btn-sm rounded-pill font-mono text-xs text-nowrap px-3 py-1.5 transition ${
+                            isActive 
+                            ? 'btn-light fw-bold shadow-sm' 
+                            : 'wf-bg-card wf-border-solid text-secondary hover-text-white border-secondary'
+                        }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            currentFilterCategory = cat;
+            renderCategories();
+            applyFilters();
+        }
+
+        // SYNC CITY FILTERS (TOPBAR & SIDEBAR)
+        function syncAndFilterCity(city) {
+            currentFilterCity = city;
+            document.getElementById('cityFilterTop').value = city;
+            document.getElementById('sidebarCityFilter').value = city;
+            applyFilters();
+        }
+
+        // DATE PRESETS FILTER
+        function setFilterDate(preset) {
+            currentFilterDatePreset = preset;
+            document.querySelectorAll('.date-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-secondary', 'text-white', 'border-secondary');
+                btn.classList.add('bg-transparent', 'text-secondary', 'border-secondary');
+            });
+            const activeBtn = document.getElementById(`btnDate${preset.charAt(0).toUpperCase() + preset.slice(1)}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-secondary', 'text-white', 'border-secondary');
+            }
+            applyFilters();
+        }
+
+        // FILTER & SORT ENGINE
+        function applyFilters() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const maxPriceVal = parseInt(document.getElementById('priceRange').value);
+            document.getElementById('priceLabel').innerText = `S/ ${maxPriceVal}`;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = EVENTS_DATA.filter(evt => {
+                const matchSearch = evt.title.toLowerCase().includes(searchVal) || 
+                                    evt.city.toLowerCase().includes(searchVal) ||
+                                    evt.venue.toLowerCase().includes(searchVal);
+                const matchCat = currentFilterCategory === 'Todos' || evt.category === currentFilterCategory;
+                const matchCity = currentFilterCity === 'ALL' || evt.city === currentFilterCity;
+                const matchPrice = evt.minPrice <= maxPriceVal;
+
+                return matchSearch && matchCat && matchCity && matchPrice;
+            });
+
+            if (sortBy === 'price-asc') {
+                filtered.sort((a, b) => a.minPrice - b.minPrice);
+            } else if (sortBy === 'price-desc') {
+                filtered.sort((a, b) => b.minPrice - a.minPrice);
+            } else {
+                filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+
+            renderEventGrid(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('priceRange').value = 500;
+            currentFilterCategory = 'Todos';
+            syncAndFilterCity('ALL');
+            setFilterDate('all');
+            renderCategories();
+            applyFilters();
+        }
+
+        // RENDER EVENT GRID
+        function renderEventGrid(events) {
+            const grid = document.getElementById('eventsGrid');
+            const emptyState = document.getElementById('emptyState');
+            document.getElementById('eventCountDisplay').innerText = events.length;
+
+            if (events.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('d-none');
+                return;
+            }
+
+            emptyState.classList.add('d-none');
+            grid.innerHTML = events.map(evt => `
+                <div class="col">
+                    <div class="wf-bg-card wf-border-solid rounded-4 overflow-hidden h-100 d-flex flex-column justify-content-between group transition">
+                        <!-- Image Placeholder Wireframe -->
+                        <div class="position-relative bg-dark border-bottom border-secondary d-flex align-items-center justify-content-center p-4 overflow-hidden" style="height: 180px;">
+                            <div class="position-absolute inset-0 bg-gradient-to-t from-dark via-transparent opacity-75"></div>
+                            <span class="font-mono text-xs text-secondary fw-bold tracking-widest text-uppercase wf-border px-3 py-1 rounded z-1">
+                                [ ${evt.imageText} ]
+                            </span>
+                            <span class="position-absolute top-0 start-0 m-3 bg-dark bg-opacity-75 border border-secondary text-light font-mono px-2 py-0.5 rounded" style="font-size: 10px;">
+                                ${evt.badge}
+                            </span>
+                            <span class="position-absolute top-0 end-0 m-3 bg-dark bg-opacity-75 border border-secondary text-secondary font-mono px-2 py-0.5 rounded" style="font-size: 10px;">
+                                ${evt.city}
+                            </span>
+                        </div>
+
+                        <!-- Card Body Info -->
+                        <div class="p-4 vstack gap-3 flex-grow-1 justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between font-mono text-secondary mb-1" style="font-size: 11px;">
+                                    <span><i class="fa-regular fa-calendar me-1"></i> ${evt.displayDate}</span>
+                                </div>
+                                <h3 class="fs-6 fw-bold text-white lh-snug mb-1">
+                                    ${evt.title}
+                                </h3>
+                                <p class="text-secondary small mb-0 d-flex align-items-center gap-1 font-mono" style="font-size: 11px;">
+                                    <i class="fa-solid fa-location-dot text-secondary"></i> ${evt.venue}
+                                </p>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <div class="pt-3 border-top border-secondary d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="font-mono text-secondary d-block" style="font-size: 10px;">Desde</span>
+                                    <span class="fs-6 fw-bold font-mono text-white">S/ ${evt.minPrice}.00</span>
+                                </div>
+                                <button onclick="openEventDetail('${evt.id}')" class="btn btn-sm btn-light font-mono fw-bold text-dark px-3 py-1.5 rounded text-xs">
+                                    Ver Tickets
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // CAROUSEL LOGIC
+        function renderCarousel() {
+            const featured = EVENTS_DATA.filter(e => e.featured);
+            if (featured.length === 0) return;
+            
+            const current = featured[carouselIndex % featured.length];
+            const container = document.getElementById('carouselContainer');
+
+            container.innerHTML = `
+                <div class="vstack gap-2 z-1 max-w-2xl">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="bg-dark border border-secondary text-light font-mono px-2 py-0.5 rounded text-uppercase" style="font-size: 11px;">${current.category}</span>
+                        <span class="font-mono text-secondary" style="font-size: 11px;"><i class="fa-solid fa-location-dot me-1"></i>${current.city} - ${current.venue}</span>
+                    </div>
+                    <h1 class="fs-3 fs-md-2 fw-black text-white tracking-tight lh-tight">${current.title}</h1>
+                    <p class="font-mono text-secondary small mb-0">Fecha del evento: ${current.displayDate}</p>
+                </div>
+
+                <div class="mt-4 d-flex flex-wrap align-items-center justify-content-between gap-3 border-top border-secondary pt-3 z-1">
+                    <div class="d-flex align-items-center gap-3">
+                        <div>
+                            <span class="font-mono text-secondary d-block text-uppercase" style="font-size: 10px;">Tiempo Restante Venta</span>
+                            <div class="font-mono fs-6 fw-bold text-white d-flex gap-2 mt-1">
+                                <span class="bg-dark px-2 py-1 rounded border border-secondary" id="cd-hours">12h</span> :
+                                <span class="bg-dark px-2 py-1 rounded border border-secondary" id="cd-mins">45m</span> :
+                                <span class="bg-dark px-2 py-1 rounded border border-secondary" id="cd-secs">30s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="font-mono text-light small">Entradas desde <strong class="text-white fs-6">S/ ${current.minPrice}</strong></span>
+                        <button onclick="openEventDetail('${current.id}')" class="btn btn-sm btn-light font-mono fw-bold text-dark px-4 py-2 rounded text-xs">
+                            Reservar Ahora
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function nextCarousel() {
+            carouselIndex++;
+            renderCarousel();
+        }
+
+        function prevCarousel() {
+            carouselIndex--;
+            if (carouselIndex < 0) carouselIndex = EVENTS_DATA.length - 1;
+            renderCarousel();
+        }
+
+        function startCountdownTimer() {
+            let h = 12, m = 45, s = 30;
+            setInterval(() => {
+                s--;
+                if (s < 0) { s = 59; m--; }
+                if (m < 0) { m = 59; h--; }
+                const elH = document.getElementById('cd-hours');
+                const elM = document.getElementById('cd-mins');
+                const elS = document.getElementById('cd-secs');
+                if (elH) elH.innerText = `${h < 10 ? '0' : ''}${h}h`;
+                if (elM) elM.innerText = `${m < 10 ? '0' : ''}${m}m`;
+                if (elS) elS.innerText = `${s < 10 ? '0' : ''}${s}s`;
+            }, 1000);
+        }
+
+        // RENDER TOP RANKING SIDEBAR
+        function renderTopRanking() {
+            const container = document.getElementById('topRankingList');
+            const top3 = EVENTS_DATA.slice(0, 3);
+            container.innerHTML = top3.map((evt, idx) => `
+                <div onclick="openEventDetail('${evt.id}')" class="d-flex align-items-center gap-3 p-2 rounded hover-bg-gray cursor-pointer transition border border-transparent">
+                    <span class="font-mono fs-5 fw-black text-secondary" style="width: 24px;">0${idx + 1}</span>
+                    <div class="flex-grow-1 text-truncate">
+                        <h4 class="fs-6 fw-bold text-white text-truncate mb-0">${evt.title}</h4>
+                        <span class="font-mono text-secondary d-block text-truncate" style="font-size: 10px;">${evt.city} • S/ ${evt.minPrice}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-secondary small"></i>
+                </div>
+            `).join('');
+        }
+
+        // OPEN EVENT DETAIL VIEW
+        function openEventDetail(eventId) {
+            selectedEventForDetail = EVENTS_DATA.find(e => e.id === eventId);
+            if (!selectedEventForDetail) return;
+
+            selectedTicketQuantities = { platinum: 0, vip: 0, general: 0 };
+
+            const banner = document.getElementById('detailHeaderBanner');
+            banner.innerHTML = `
+                <div class="vstack gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="bg-dark text-light font-mono px-2 py-0.5 rounded" style="font-size: 11px;">${selectedEventForDetail.category}</span>
+                        <span class="font-mono text-secondary small" style="font-size: 11px;">${selectedEventForDetail.city}</span>
+                    </div>
+                    <h1 class="fs-3 fw-bold text-white mb-0">${selectedEventForDetail.title}</h1>
+                    <p class="font-mono text-secondary small mb-0" style="font-size: 11px;">
+                        <i class="fa-solid fa-location-dot me-1 text-secondary"></i> ${selectedEventForDetail.venue} &nbsp;|&nbsp; 
+                        <i class="fa-regular fa-calendar me-1 text-secondary"></i> ${selectedEventForDetail.displayDate}
+                    </p>
+                </div>
+                <div class="text-start text-md-end vstack justify-content-between h-100 gap-2">
+                    <span class="font-mono text-secondary small" style="font-size: 11px;">Estado: <span class="text-success fw-bold">VENTA ACTIVA</span></span>
+                    <span class="font-mono text-secondary" style="font-size: 10px;">Capacidad Monitoreada en Vivo</span>
+                </div>
+            `;
+
+            renderTicketSelectors();
+            updateDetailTotals();
+            switchView('detail');
+        }
+
+        // RENDER TICKET SELECTORS FOR ZONES
+        function renderTicketSelectors() {
+            const container = document.getElementById('ticketSelectors');
+            const zones = selectedEventForDetail.zones;
+
+            container.innerHTML = Object.keys(zones).map(key => {
+                const z = zones[key];
+                const qty = selectedTicketQuantities[key];
+                return `
+                    <div id="selector-box-${key}" class="wf-bg rounded-3 p-3 border border-secondary vstack gap-2 transition">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="fs-6 fw-bold font-mono text-white mb-0">${z.name}</h4>
+                                <span class="font-mono text-secondary" style="font-size: 10px;">Stock: ${z.stock} disponibles</span>
+                            </div>
+                            <span class="fs-6 fw-bold font-mono text-white">S/ ${z.price}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary">
+                            <span class="font-mono text-secondary" style="font-size: 11px;">Cantidad:</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <button onclick="changeQty('${key}', -1)" class="btn btn-sm btn-dark text-white font-mono fw-bold py-0 px-2 rounded" style="width: 26px; height: 26px;">-</button>
+                                <span class="font-mono fw-bold text-white text-center" style="width: 24px; font-size: 12px;">${qty}</span>
+                                <button onclick="changeQty('${key}', 1)" class="btn btn-sm btn-dark text-white font-mono fw-bold py-0 px-2 rounded" style="width: 26px; height: 26px;">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // MAP SVG INTERACTION
+        function selectZone(zoneKey) {
+            if (selectedEventForDetail) {
+                changeQty(zoneKey, 1);
+                
+                document.querySelectorAll('.zone-path').forEach(p => p.classList.remove('selected'));
+                const path = document.getElementById(`zone-${zoneKey}`);
+                if (path) path.classList.add('selected');
+
+                const box = document.getElementById(`selector-box-${zoneKey}`);
+                if (box) {
+                    box.classList.add('border-light');
+                    setTimeout(() => box.classList.remove('border-light'), 1000);
+                }
+            }
+        }
+
+        function changeQty(zoneKey, delta) {
+            const current = selectedTicketQuantities[zoneKey] || 0;
+            const maxStock = selectedEventForDetail.zones[zoneKey].stock;
+            const next = current + delta;
+
+            if (next >= 0 && next <= maxStock) {
+                selectedTicketQuantities[zoneKey] = next;
+                renderTicketSelectors();
+                updateDetailTotals();
+            }
+        }
+
+        function updateDetailTotals() {
+            let subtotal = 0;
+            let totalTickets = 0;
+
+            Object.keys(selectedTicketQuantities).forEach(key => {
+                const qty = selectedTicketQuantities[key];
+                const price = selectedEventForDetail.zones[key].price;
+                subtotal += qty * price;
+                totalTickets += qty;
+            });
+
+            const fee = subtotal * 0.10;
+            const total = subtotal + fee;
+
+            document.getElementById('detailSubtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('detailFee').innerText = `S/ ${fee.toFixed(2)}`;
+            document.getElementById('detailTotal').innerText = `S/ ${total.toFixed(2)}`;
+
+            const addBtn = document.getElementById('addToCartBtn');
+            if (totalTickets > 0) {
+                addBtn.disabled = false;
+                addBtn.classList.remove('btn-dark', 'text-secondary');
+                addBtn.classList.add('btn-light', 'text-dark');
+            } else {
+                addBtn.disabled = true;
+                addBtn.classList.add('btn-dark', 'text-secondary');
+                addBtn.classList.remove('btn-light', 'text-dark');
+            }
+        }
+
+        // ADD TO CART ACTION
+        function addSelectedTicketsToCart() {
+            Object.keys(selectedTicketQuantities).forEach(zoneKey => {
+                const qty = selectedTicketQuantities[zoneKey];
+                if (qty > 0) {
+                    const zoneObj = selectedEventForDetail.zones[zoneKey];
+                    const existingIndex = cart.findIndex(item => item.eventId === selectedEventForDetail.id && item.zoneKey === zoneKey);
+                    
+                    if (existingIndex > -1) {
+                        cart[existingIndex].quantity += qty;
+                    } else {
+                        cart.push({
+                            eventId: selectedEventForDetail.id,
+                            eventTitle: selectedEventForDetail.title,
+                            eventDate: selectedEventForDetail.displayDate,
+                            zoneKey: zoneKey,
+                            zoneName: zoneObj.name,
+                            unitPrice: zoneObj.price,
+                            quantity: qty
+                        });
+                    }
+                }
+            });
+
+            updateCartUI();
+            showToast("Tickets añadidos al carrito con éxito.");
+            switchView('checkout');
+        }
+
+        // UPDATE CART BADGES & MINI CART
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartBadgeCount').innerText = totalItems;
+            document.getElementById('miniCartCount').innerText = `${totalItems} ítems`;
+
+            const miniCartContent = document.getElementById('miniCartContent');
+            const miniBtn = document.getElementById('btnMiniCartCheckout');
+
+            if (cart.length === 0) {
+                miniCartContent.innerHTML = 'No tienes entradas seleccionadas.';
+                miniBtn.disabled = true;
+                miniBtn.classList.add('btn-dark', 'text-secondary');
+                miniBtn.classList.remove('btn-light', 'text-dark');
+            } else {
+                miniCartContent.innerHTML = cart.map(i => `
+                    <div class="d-flex justify-content-between align-items-center py-1 border-bottom border-secondary">
+                        <span class="text-truncate text-light" style="max-width: 140px;">${i.quantity}x ${i.eventTitle} (${i.zoneName})</span>
+                        <span class="fw-bold text-white">S/ ${i.unitPrice * i.quantity}</span>
+                    </div>
+                `).join('');
+                miniBtn.disabled = false;
+                miniBtn.classList.remove('btn-dark', 'text-secondary');
+                miniBtn.classList.add('btn-light', 'text-dark');
+            }
+        }
+
+        function renderCheckoutView() {
+            const container = document.getElementById('checkoutItemsList');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="wf-border rounded-4 p-5 text-center text-secondary font-mono vstack gap-3">
+                        <i class="fa-solid fa-cart-flatbed fa-2x text-secondary"></i>
+                        <p class="fs-6 text-light">Tu carrito está vacío.</p>
+                        <button onclick="switchView('explore')" class="btn btn-dark wf-border-solid text-white rounded px-4 py-2 text-xs">Ir a Explorar Eventos</button>
+                    </div>
+                `;
+                document.getElementById('cartSubtotal').innerText = 'S/ 0.00';
+                document.getElementById('cartFee').innerText = 'S/ 0.00';
+                document.getElementById('cartTotal').innerText = 'S/ 0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map((item, idx) => {
+                const itemTotal = item.unitPrice * item.quantity;
+                subtotal += itemTotal;
+                return `
+                    <div class="wf-bg-card wf-border-solid rounded-4 p-4 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 font-mono">
+                        <div class="vstack gap-1">
+                            <h4 class="fs-6 fw-bold text-white mb-0">${item.eventTitle}</h4>
+                            <p class="text-secondary small mb-0" style="font-size: 11px;">Zona: <strong class="text-light">${item.zoneName}</strong> - S/ ${item.unitPrice}.00 c/u</p>
+                            <span class="text-secondary" style="font-size: 10px;">${item.eventDate}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <button onclick="updateCartItemQty(${idx}, -1)" class="btn btn-sm btn-dark text-white py-0 px-2 rounded text-xs">-</button>
+                                <span class="fs-6 fw-bold text-white w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateCartItemQty(${idx}, 1)" class="btn btn-sm btn-dark text-white py-0 px-2 rounded text-xs">+</button>
+                            </div>
+                            <span class="fs-6 fw-bold text-white text-end" style="width: 80px;">S/ ${itemTotal}.00</span>
+                            <button onclick="removeCartItem(${idx})" class="btn btn-link text-secondary text-decoration-none hover-text-danger p-0">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const fee = subtotal * 0.10;
+            const total = subtotal + fee;
+
+            document.getElementById('cartSubtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('cartFee').innerText = `S/ ${fee.toFixed(2)}`;
+            document.getElementById('cartTotal').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function updateCartItemQty(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+            renderCheckoutView();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+            renderCheckoutView();
+        }
+
+        function handlePayment(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showToast("El carrito está vacío.");
+                return;
+            }
+
+            showToast("¡Pago procesado exitosamente! Tus e-Tickets han sido enviados.");
+            cart = [];
+            updateCartUI();
+            setTimeout(() => {
+                switchView('explore');
+            }, 1500);
+        }
+
+        // MODAL HELPERS (Bootstrap Modal integration)
+        function showModal(id) {
+            const modalEl = document.getElementById(id);
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        function closeModal(id) {
+            const modalEl = document.getElementById(id);
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        function submitB2BForm(e) {
+            e.preventDefault();
+            closeModal('modalB2B');
+            showToast("Solicitud B2B enviada. Un asesor se comunicará contigo.");
+        }
+
+        // TOAST NOTIFIER
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('d-none');
+            setTimeout(() => {
+                toast.classList.add('d-none');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
