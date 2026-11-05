@@ -1,5 +1,3 @@
-// funcion de calculadora
-
 //Subscribir
 document.addEventListener('DOMContentLoaded',() => {
     const subButtons = document.querySelectorAll('.hz-btn-sub');
@@ -14,5 +12,8 @@ document.addEventListener('DOMContentLoaded',() => {
 
 
 //func read the event that's clicked to show the subscribed eventin the cart
+
+
+// funcion de calculadora
 
 
