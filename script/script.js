@@ -1,4 +1,4 @@
-//Subscribir
+//Subscribe
 document.addEventListener('DOMContentLoaded',() => {
     const subButton = document.querySelectorAll('.hz-btn-sub');
     const cartContainer = document.querySelector('#cart');
@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded',() => {
         let subscribed = false;
         let cart = null;
 
+    //func to create a new div on the cart (also remove btw)  
         button.addEventListener('click', () => {
             subscribed = !subscribed; 
             if(subscribed){
@@ -21,14 +22,15 @@ document.addEventListener('DOMContentLoaded',() => {
 
             }else{
                 button.textContent = 'Subscribe'
+                if (cart && cart.parentNode) {
+                    cart.parentNode.removeChild(cart);
+                    cart = null;
+                }
             }
-            
-            //func read the event that's clicked to show the subscribed eventin the cart
-            
         });
     });
 })
 
-// funcion de calculadora
+// func of calc
 
 
